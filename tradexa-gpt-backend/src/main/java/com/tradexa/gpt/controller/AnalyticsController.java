@@ -6,6 +6,7 @@ import com.tradexa.gpt.analytics.AnalyticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.tradexa.gpt.dto.SymbolAnalyticsResponse;
+import com.tradexa.gpt.dto.MarketHourAnalyticsResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,6 +48,22 @@ public class AnalyticsController {
         response.setMessage("Symbol analytics fetched successfully");
         response.setData(analytics);
         response.setTimestamp(java.time.LocalDateTime.now());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/market-hours")
+    public ResponseEntity<ApiResponse<List<MarketHourAnalyticsResponse>>> getMarketHourAnalytics() {
+
+        List<MarketHourAnalyticsResponse> analytics =
+                analyticsService.getMarketHourAnalytics();
+
+        ApiResponse<List<MarketHourAnalyticsResponse>> response = new ApiResponse<>();
+
+        response.setSuccess(true);
+        response.setMessage("Market hour analytics fetched successfully");
+        response.setData(analytics);
+        response.setTimestamp(LocalDateTime.now());
 
         return ResponseEntity.ok(response);
     }
