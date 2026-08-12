@@ -7,6 +7,7 @@ import com.tradexa.gpt.entity.UserRole;
 import com.tradexa.gpt.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.tradexa.gpt.exception.InvalidCredentialsException;
 import com.tradexa.gpt.exception.UserAlreadyExistsException;
 import com.tradexa.gpt.security.JwtService;
 import com.tradexa.gpt.dto.LoginRequest;
@@ -56,17 +57,17 @@ public class UserService {
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password."));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password.");
+            throw new InvalidCredentialsException();
         }
 
         String token = jwtService.generateToken(user.getEmail());
 
         LoginResponse response = new LoginResponse();
 
+        response.setId(user.getId());
         response.setToken(token);
         response.setEmail(user.getEmail());
         response.setName(user.getName());

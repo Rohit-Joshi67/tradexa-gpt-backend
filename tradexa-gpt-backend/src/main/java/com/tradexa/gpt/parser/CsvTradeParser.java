@@ -70,9 +70,7 @@ public class CsvTradeParser {
             }
 
         } catch (Exception e) {
-
-            throw new RuntimeException("Failed to parse CSV file.", e);
-
+            throw new CsvParsingException("Failed to parse CSV file: " + e.getMessage());
         }
 
         return trades;
