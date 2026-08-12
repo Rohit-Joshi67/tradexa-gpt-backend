@@ -1,6 +1,7 @@
 package com.tradexa.gpt.service;
 
 import com.tradexa.gpt.dto.LoginRequest;
+import com.tradexa.gpt.exception.InvalidCredentialsException;
 import com.tradexa.gpt.exception.UserAlreadyExistsException;
 import com.tradexa.gpt.repository.UserRepository;
 import com.tradexa.gpt.security.JwtService;
@@ -14,7 +15,6 @@ import com.tradexa.gpt.dto.RegisterRequest;
 import com.tradexa.gpt.dto.RegisterResponse;
 import com.tradexa.gpt.entity.User;
 import com.tradexa.gpt.entity.UserRole;
-import com.tradexa.gpt.dto.LoginRequest;
 import com.tradexa.gpt.dto.LoginResponse;
 
 import java.util.Optional;
@@ -108,7 +108,7 @@ class UserServiceTest {
         request.setPassword("123456");
 
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setName("Rohit");
         user.setEmail("rohit@gmail.com");
         user.setPassword("encodedPassword");
@@ -120,7 +120,7 @@ class UserServiceTest {
                 .thenReturn(true);
 
         when(jwtService.generateToken(user.getEmail()))
-                .thenReturn("sample Jwt token");
+                .thenReturn("sample-jwt-token");
 
         LoginResponse response = userService.login(request);
 
@@ -146,7 +146,7 @@ class UserServiceTest {
         request.setPassword("wrongPassword");
 
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setName("Rohit");
         user.setEmail("rohit@gmail.com");
         user.setPassword("encodedPassword");
@@ -161,8 +161,8 @@ class UserServiceTest {
                 .thenReturn(false);
 
         // Act + Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        InvalidCredentialsException exception = assertThrows(
+                InvalidCredentialsException.class,
                 () -> userService.login(request)
         );
 
@@ -190,8 +190,8 @@ class UserServiceTest {
                 .thenReturn(Optional.empty());
 
         // Act + Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        InvalidCredentialsException exception = assertThrows(
+                InvalidCredentialsException.class,
                 () -> userService.login(request)
         );
 

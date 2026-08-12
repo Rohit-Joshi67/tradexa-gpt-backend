@@ -9,11 +9,17 @@ public class AnalyticsSummaryResponse {
     private long losingTrades;
 
     private BigDecimal totalPnl;
-
     private double winRate;
 
     private BigDecimal averageProfit;
     private BigDecimal averageLoss;
+
+    private BigDecimal meanPnl;
+    private BigDecimal medianPnl;
+    private double variance;
+    private double standardDeviation;
+    private double skewness;
+    private BigDecimal expectancy;
 
     public long getTotalTrades() {
         return totalTrades;
@@ -71,7 +77,51 @@ public class AnalyticsSummaryResponse {
         this.averageLoss = averageLoss;
     }
 
-    public void setTotalPnL(BigDecimal totalPnl) {
-        this.totalPnl = totalPnl;
+    public BigDecimal getMeanPnl() {
+        return meanPnl;
+    }
+
+    public void setMeanPnl(BigDecimal meanPnl) {
+        this.meanPnl = meanPnl;
+    }
+
+    public BigDecimal getMedianPnl() {
+        return medianPnl;
+    }
+
+    public void setMedianPnl(BigDecimal medianPnl) {
+        this.medianPnl = medianPnl;
+    }
+
+    public double getVariance() {
+        return variance;
+    }
+
+    public void setVariance(double variance) {
+        this.variance = variance;
+    }
+
+    public double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public void setStandardDeviation(double standardDeviation) {
+        this.standardDeviation = standardDeviation;
+    }
+
+    public double getSkewness() {
+        return skewness;
+    }
+
+    public void setSkewness(double skewness) {
+        this.skewness = skewness;
+    }
+
+    public BigDecimal getExpectancy() {
+        return expectancy;
+    }
+
+    public void setExpectancy(BigDecimal expectancy) {
+        this.expectancy = expectancy;
     }
 }

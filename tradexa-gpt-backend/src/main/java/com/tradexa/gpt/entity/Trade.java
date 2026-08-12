@@ -30,6 +30,10 @@ public class Trade {
 
     private BigDecimal slippage;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Trade(){
 
     }
@@ -116,6 +120,14 @@ public class Trade {
 
     public void setPnl(BigDecimal pnl) {
         this.pnl = pnl;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

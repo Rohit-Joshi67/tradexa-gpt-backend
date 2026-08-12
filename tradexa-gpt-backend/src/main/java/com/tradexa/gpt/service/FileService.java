@@ -34,7 +34,7 @@ public class FileService {
         }
         List<Trade> trades = csvTradeParser.parse(file);
         tradeService.saveAllTrades(trades);
-        System.out.println("Trades parsed :" +trades.size());
+
         UploadResponseDTO response = new UploadResponseDTO();
 
         response.setFileName(file.getOriginalFilename());
