@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { getSymbols } from '../api/analytics'
 import { useAuth } from '../context/AuthContext'
@@ -17,7 +17,7 @@ export default function AppShell() {
         setTicker(
           (rows || []).slice(0, 8).map((row) => ({
             label: row.symbol,
-            value: `${formatPercent(row.winRate)} · ${row.totalPnl}`,
+            value: `${formatPercent(row.winRate)} Â· ${row.totalPnl}`,
             tone: pnlClass(row.totalPnl),
           })),
         )
@@ -39,7 +39,7 @@ export default function AppShell() {
             Tradexa
           </div>
           <nav className="nav-links">
-            <NavLink to="/" end>Dashboard</NavLink>
+            <NavLink to="/dashboard" end>Dashboard</NavLink>
             <NavLink to="/trades">Trades</NavLink>
             <NavLink to="/analytics">Analytics</NavLink>
             <NavLink to="/upload">Upload</NavLink>
@@ -61,7 +61,7 @@ export default function AppShell() {
         </div>
         <div className="ticker">
           {ticker.length === 0 ? (
-            <span>Your journal is live · add trades to populate this pulse</span>
+            <span>Your journal is live Â· add trades to populate this pulse</span>
           ) : (
             ticker.map((item) => (
               <span key={item.label}>
