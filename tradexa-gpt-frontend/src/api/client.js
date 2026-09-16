@@ -46,7 +46,8 @@ api.interceptors.response.use(
   },
 )
 
-export function unwrap(response) {
+export async function unwrap(promise) {
+  const response = await promise
   return response.data?.data
 }
 
