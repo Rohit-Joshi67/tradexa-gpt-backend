@@ -93,4 +93,15 @@ public class GlobalExceptionHandler {
         response.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+        ex.printStackTrace();
+        ApiResponse<Void> response = new ApiResponse<>();
+        response.setSuccess(false);
+        response.setMessage("Internal Server Error: " + ex.getMessage());
+        response.setData(null);
+        response.setTimestamp(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 }
