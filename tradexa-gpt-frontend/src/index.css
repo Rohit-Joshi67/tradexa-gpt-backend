@@ -1,3 +1,4 @@
+@import "tailwindcss";
 :root {
   --bg: #f4f7f4;
   --bg-2: #eef3ee;
@@ -425,3 +426,4 @@ textarea:focus {
     display: none;
   }
 }
+
