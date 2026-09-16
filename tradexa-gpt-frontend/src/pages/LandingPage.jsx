@@ -2,7 +2,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import HorizontalDisclaimer from '../components/HorizontalDisclaimer';
-import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown } from 'lucide-react';
+import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown, DollarSign, TrendingUp, TrendingDown, PieChart } from 'lucide-react';
 
 const Navbar = () => {
   return (
@@ -70,26 +70,60 @@ export default function LandingPage() {
         {/* Abstract Chart Graphic */}
         <motion.div 
           style={{ y }}
-          className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-[600px] hidden lg:block pointer-events-none"
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-[55%] h-[600px] hidden lg:block pointer-events-none"
         >
-          <div className="w-full h-full border border-white/10 rounded-3xl bg-neutral-900/30 backdrop-blur-sm p-8 relative overflow-hidden">
-            <div className="absolute top-10 left-10 w-40 h-24 bg-indigo-500/20 rounded-xl border border-indigo-500/30 flex flex-col justify-center p-4">
-              <span className="text-xs text-indigo-300 mb-1">Risk Exposure</span>
-              <span className="text-2xl font-bold text-white">1.25%</span>
+          <div className="w-full h-full border border-white/10 rounded-3xl bg-neutral-900/40 backdrop-blur-md p-8 relative overflow-hidden shadow-2xl">
+            {/* Animated Candlesticks Background */}
+            <div className="absolute inset-0 opacity-20 flex items-end justify-around px-12 pb-12">
+               {[40, 70, 30, 90, 50, 80, 60].map((h, i) => (
+                 <motion.div 
+                   key={i}
+                   animate={{ height: [h + '%', (h+20) + '%', h + '%'] }}
+                   transition={{ duration: 3 + i, repeat: Infinity, ease: "easeInOut" }}
+                   className={i % 2 === 0 ? 'w-8 rounded-t-sm bg-emerald-500' : 'w-8 rounded-t-sm bg-red-500'}
+                 >
+                   <div className="w-1 h-full bg-white/50 mx-auto -translate-y-4 translate-y-4 scale-y-150"></div>
+                 </motion.div>
+               ))}
             </div>
-            <div className="absolute bottom-20 right-10 w-48 h-32 bg-emerald-500/20 rounded-xl border border-emerald-500/30 flex flex-col justify-center p-4">
-              <span className="text-xs text-emerald-300 mb-1">Win Rate</span>
-              <span className="text-3xl font-bold text-white">64.2%</span>
-            </div>
-            <svg viewBox="0 0 400 400" className="w-full h-full opacity-30">
-               <path d="M 0 300 Q 100 200 200 250 T 400 100" fill="none" stroke="url(#grad)" strokeWidth="4" />
-               <defs>
-                 <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
-                   <stop offset="0%" stopColor="#6366f1" />
-                   <stop offset="100%" stopColor="#10b981" />
-                 </linearGradient>
-               </defs>
-            </svg>
+
+            {/* Floating Finance Cards */}
+            <motion.div 
+              animate={{ y: [0, -15, 0] }} 
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-12 left-8 w-48 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 p-5 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Net P&L</span>
+                <DollarSign className="w-4 h-4 text-indigo-400" />
+              </div>
+              <span className="text-3xl font-bold text-white block mb-1">+,290</span>
+              <span className="text-xs text-emerald-400 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> +12.4% this week</span>
+            </motion.div>
+
+            <motion.div 
+              animate={{ y: [0, 20, 0] }} 
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute bottom-24 right-10 w-52 bg-emerald-500/20 rounded-2xl border border-emerald-500/30 p-5 shadow-[0_0_30px_rgba(16,185,129,0.2)] backdrop-blur-md"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">Win Rate</span>
+                <PieChart className="w-4 h-4 text-emerald-400" />
+              </div>
+              <span className="text-4xl font-bold text-white block mb-1">68.4%</span>
+              <div className="w-full bg-black/50 h-2 rounded-full overflow-hidden mt-3">
+                <div className="bg-emerald-400 w-[68.4%] h-full rounded-full"></div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              animate={{ x: [0, -20, 0] }} 
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              className="absolute top-1/2 right-12 w-40 bg-red-500/10 rounded-2xl border border-red-500/20 p-4 backdrop-blur-md"
+            >
+              <span className="text-xs font-semibold text-red-300 uppercase tracking-wider block mb-1">Max Drawdown</span>
+              <span className="text-xl font-bold text-white block">-2.1%</span>
+            </motion.div>
           </div>
         </motion.div>
       </section>
@@ -204,7 +238,7 @@ export default function LandingPage() {
             <p className="text-xl text-neutral-400 leading-relaxed mb-8">
               Tradexa-GPT helps you explore trading concepts, analyze risk scenarios, understand financial concepts, and structure your thinking around the markets.
             </p>
-            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-full font-medium hover:bg-emerald-600 transition-colors">
+            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-medium hover:bg-neutral-200 transition-colors">
               Try Tradexa-GPT <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -213,14 +247,14 @@ export default function LandingPage() {
             <div className="flex gap-4 mb-6">
               <div className="w-8 h-8 rounded-full bg-neutral-800 flex-shrink-0 flex items-center justify-center">U</div>
               <div className="bg-neutral-900 rounded-2xl rounded-tl-none p-4 text-sm text-neutral-200">
-                How much should I risk on a NIFTY options trade if my account size is ?1,00,000 and my stop loss is 20 points?
+                How much should I risk on a NIFTY options trade if my account size is ₹1,00,000 and my stop loss is 20 points?
               </div>
             </div>
             <div className="flex gap-4">
               <div className="w-8 h-8 rounded-full bg-indigo-500 flex-shrink-0 flex items-center justify-center">T</div>
               <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl rounded-tl-none p-4 text-sm text-neutral-200 leading-relaxed">
-                Based on a standard 1% risk rule, you should risk ?1,000 per trade.<br/><br/>
-                With a 20-point stop loss on NIFTY, your risk per lot (25 qty) is ?500.<br/>
+                Based on a standard 1% risk rule, you should risk ₹1,000 per trade.<br/><br/>
+                With a 20-point stop loss on NIFTY, your risk per lot (25 qty) is ₹500.<br/>
                 Therefore, your optimal position size is **2 lots (50 quantity)**.
               </div>
             </div>
@@ -283,10 +317,5 @@ export default function LandingPage() {
     </div>
   );
 }
-
-
-
-
-
 
 
