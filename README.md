@@ -1,177 +1,130 @@
-# 📈 Tradexa GPT Backend
+﻿<div align="center">
+  <br />
+  <img src="https://raw.githubusercontent.com/Rohit-Joshi67/tradexa-gpt-backend/main/tradexa-gpt-frontend/public/vite.svg" alt="Tradexa Logo" width="80" />
+  <br />
 
-Tradexa GPT is a production-style Spring Boot backend application that helps traders upload their trading journals, store trade history, analyze trading performance, and securely access APIs using JWT authentication.
+  # ✦ TheFinanceWorld | Tradexa-GPT ✦
+  
+  <p align="center">
+    <b>The Intelligence Layer for Disciplined Traders.</b>
+  </p>
+  
+  <p align="center">
+    Trading is Math, Not Magic. Tradexa equips retail traders with institutional-grade risk management tools, real-time exposure tracking, and AI-driven journal analysis.
+  </p>
 
-The project is being developed following real-world backend engineering practices with a focus on clean architecture, scalability, and maintainability.
-
----
-
-# 🚀 Tech Stack
-
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- Spring Security
-- JWT Authentication
-- MySQL
-- Hibernate
-- Maven
-
----
-
-# ✅ Features Implemented
-
-
-
-- Create Trade
-- Update Trade
-- Delete Trade
-- Get Trade by ID
-- Get All Trades
+  <p align="center">
+    <a href="https://tradexa-gpt-frontend.vercel.app"><img src="https://img.shields.io/badge/Live_Preview-Emerald?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" /></a>
+    <a href="#features"><img src="https://img.shields.io/badge/Features-Indigo?style=for-the-badge" alt="Features" /></a>
+    <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-Purple?style=for-the-badge" alt="Architecture" /></a>
+  </p>
+</div>
 
 ---
 
-## CSV Upload
+<br />
 
-- Upload trading journal CSV
-- Parse CSV using Apache Commons CSV
-- Import trades into MySQL
-- Fault-tolerant parsing
-    - Invalid Strings → Empty
-    - Invalid Numbers → 0
-    - Parsing never stops because of bad rows
+## ❖ The Philosophy
 
----
+> *"The first rule of trading isn't finding the opportunity. It's surviving long enough to find the next one."*
 
-## Analytics Engine
+Tradexa is built around a singular philosophy: **Discipline Compounds**. We remove the emotion from trading by enforcing strict mathematical rules. 
 
-Provides portfolio statistics including:
+<br />
 
-- Total Trades
-- Winning Trades
-- Losing Trades
-- Win Rate
-- Total Profit & Loss
-- Average Profit
-- Average Loss
-- Symbol-wise Analytics
+## ❖ Core Features
 
----
+<table align="center" width="100%">
+  <tr>
+    <td width="33%">
+      <h3>🛡️ Risk Calculator</h3>
+      Calculate exact position sizing, exposure, and stop-loss distances in seconds before entering a trade.
+    </td>
+    <td width="33%">
+      <h3>🧠 Tradexa-GPT</h3>
+      A specialized financial AI model that analyzes your risk and finds mathematical leaks in your strategy.
+    </td>
+    <td width="33%">
+      <h3>📊 Journal Analytics</h3>
+      Upload CSV execution logs directly from brokers (like Dhan) and let Tradexa automatically pair your buys and sells via FIFO matching.
+    </td>
+  </tr>
+</table>
 
-## Authentication & Security
+<br />
 
-- User Registration
-- User Login
-- BCrypt Password Encryption
-- JWT Token Generation
-- JWT Authentication Filter
-- Protected REST APIs
-- Spring Security Configuration
+## ❖ Architecture Flow
 
----
+The system is built on a high-performance **Java 21 Spring Boot Backend** and a beautiful **React (Vite) + Tailwind CSS Frontend**. 
 
-## Backend Engineering Concepts
+`mermaid
+graph TD
+    %% Styling
+    classDef client fill:#10b981,stroke:#064e3b,stroke-width:2px,color:#fff;
+    classDef api fill:#6366f1,stroke:#312e81,stroke-width:2px,color:#fff;
+    classDef database fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef ai fill:#8b5cf6,stroke:#4c1d95,stroke-width:2px,color:#fff;
 
-- Layered Architecture
-- DTO Pattern
-- Entity Mapping
-- Mapper Classes
-- Constructor Dependency Injection
-- Global Exception Handling
-- Custom Exceptions
-- Generic API Response Wrapper
-- Repository Pattern
-- Service Layer
-- REST API Design
+    Client[Frontend UI Client]:::client --> |JWT Authenticated Requests| Gateway[Spring Boot API]:::api
+    
+    subgraph Spring Boot Backend Environment
+        Gateway --> |Multipart Upload| Parser[CSV Trade Parser Engine]
+        Gateway --> |REST Calls| AIController[Tradexa-GPT Controller]
+        Parser --> |FIFO Execution Matching| TradeLogic[Trade PNL Calculator]
+        TradeLogic --> DB[(MySQL Relational Database)]:::database
+    end
 
----
+    AIController --> |LLM Prompts| LLM[Generative AI Provider]:::ai
+    DB --> |Analytics Aggregation| Gateway
+    Gateway --> |JSON Response| Client
+`
 
-# 📂 Project Structure
+<br />
 
-```
-src
-├── config
-├── controller
-├── dto
-├── entity
-├── exception
-├── mapper
-├── parser
-├── repository
-├── security
-├── service
-└── util
-```
+## ❖ Technical Stack
 
----
+### **Frontend (TheFinanceWorld UI)**
+- **Framework:** React 18 (Vite)
+- **Styling:** Tailwind CSS v4, Framer Motion
+- **Icons:** Lucide React
+- **Deployment:** Vercel
 
-# 📸 API Documentation
+### **Backend (Tradexa Core)**
+- **Framework:** Java 21 / Spring Boot 3
+- **Security:** Spring Security & JWT Token Authentication
+- **Data Persistence:** Spring Data JPA / Hibernate
+- **Database:** MySQL
+- **Build Tool:** Maven
 
-Swagger UI
+<br />
 
-![Swagger UI](Swagger_UI.png)
+## ❖ Broker Integrations
 
----
+Tradexa features a custom-built Java parsing engine that processes raw execution logs.
+- **Dhan (Active):** Custom FIFO algorithm correctly pairs individual BUY and SELL execution rows into grouped Trade entities with Entry, Exit, and Net P&L.
+- **Generic CSV:** Fallback parser for standard grouped trade rows.
 
-# 🛠 Upcoming Features
+<br />
 
-### Testing
+## ❖ Running Locally
 
-- JUnit 5
-- Mockito
-- Integration Testing
+### 1. Backend Setup
+\\\ash
+cd tradexa-gpt-backend
+# Ensure MySQL is running on localhost:3306 with user 'root', password 'root'
+mvn clean install
+mvn spring-boot:run
+\\\
 
-### API Improvements
+### 2. Frontend Setup
+\\\ash
+cd tradexa-gpt-frontend
+npm install
+npm run dev
+\\\
 
-- Pagination
-- Sorting
-- Filtering
+<br />
 
-### Performance
-
-- Redis Caching
-
-### Deployment
-
-- Docker
-- AWS Deployment
-
----
-
-# 📌 Current Status
-
-✅ CRUD APIs
-
-✅ MySQL Integration
-
-✅ CSV Upload
-
-✅ Analytics Engine
-
-✅ JWT Authentication
-
-🚧 JUnit + Mockito (In Progress)
-
-🚧 Pagination, Sorting & Filtering (Next)
-
----
-
-# 📈 Future Roadmap
-
-- Redis Cache
-- Docker
-- AWS EC2 Deployment
-- CI/CD with GitHub Actions
-- Role-Based Authorization (ADMIN / USER)
-- Trade Dashboard APIs
-- AI-powered Trade Insights
-
----
-
-## 👨‍💻 Author
-
-**Rohit Joshi**
-
-Backend Developer | Java | Spring Boot | MySQL
-
-GitHub: https://github.com/CoolMonkRJ
+<div align="center">
+  <p>Built for the disciplined generation of traders.</p>
+</div>
