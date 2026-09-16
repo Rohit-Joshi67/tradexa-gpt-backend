@@ -1,0 +1,23 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Ping every 10 minutes (UTC). Free GitHub Actions on public repos supports this.
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  ping:
+    name: Ping Health Endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /api/v1/health
+        run: |
+          echo "Pinging Render server at $(date -u)"
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${{ secrets.RENDER_URL }}/api/v1/health")
+          echo "HTTP status: $RESPONSE"
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ Server is alive"
+          else
+            echo "⚠️  Unexpected status $RESPONSE — server may be cold-starting"
+          fi
