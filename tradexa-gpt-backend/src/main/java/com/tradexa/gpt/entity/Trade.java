@@ -122,6 +122,10 @@ public class Trade {
         this.pnl = pnl;
     }
 
+    public String getBroker() { return broker; }
+
+    public void setBroker(String broker) { this.broker = broker; }
+
     public User getUser() {
         return user;
     }

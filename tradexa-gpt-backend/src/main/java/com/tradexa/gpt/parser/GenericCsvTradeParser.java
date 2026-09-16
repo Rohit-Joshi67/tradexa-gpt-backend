@@ -18,8 +18,9 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 @Component
-public class CsvTradeParser {
+public class GenericCsvTradeParser implements TradeParser {
 
+    @Override
     public List<Trade> parse(MultipartFile file) {
         List<Trade> trades = new ArrayList<>();
         try{

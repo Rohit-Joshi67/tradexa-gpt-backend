@@ -21,18 +21,16 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<UploadResponseDTO>> uploadFile(
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "broker", defaultValue = "GENERIC") String broker
     ) {
-
-        UploadResponseDTO responseDTO = fileService.uploadFile(file);
-
+        UploadResponseDTO responseDTO = fileService.uploadFile(file, broker);
         ApiResponse<UploadResponseDTO> response = new ApiResponse<>();
-
         response.setSuccess(true);
         response.setMessage("File uploaded successfully");
         response.setData(responseDTO);
         response.setTimestamp(LocalDateTime.now());
-
         return ResponseEntity.ok(response);
     }
 }
+
