@@ -13,12 +13,13 @@ This project is being built from scratch following production-level backend prac
 - Maven
 - REST APIs
 - In-Memory Storage (Current Phase)
-
+   
 ---
 
 ## ✅ Features Completed
 
-### CRUD APIs
+### CRUD APIs 
+
 
 - Create Trade
 - Get All Trades
