@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import HorizontalDisclaimer from '../components/HorizontalDisclaimer';
 import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown } from 'lucide-react';
 
 const Navbar = () => {
@@ -33,7 +34,7 @@ export default function LandingPage() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-50 font-sans selection:bg-indigo-500/30 overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] text-neutral-50 bg-[url('data:image/svg+xml,%3Csvg width=\&quot;60\&quot; height=\&quot;60\&quot; viewBox=\&quot;0 0 60 60\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;%3E%3Cg fill=\&quot;none\&quot; fill-rule=\&quot;evenodd\&quot;%3E%3Cg fill=\&quot;%23ffffff\&quot; fill-opacity=\&quot;0.03\&quot;%3E%3Cpath d=\&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] font-sans selection:bg-indigo-500/30 overflow-hidden">
       <Navbar />
 
       {/* Hero Section */}
@@ -235,6 +236,7 @@ export default function LandingPage() {
         <p className="text-neutral-400 uppercase tracking-widest text-sm font-semibold">Tradexa Risk Philosophy</p>
       </section>
 
+      <HorizontalDisclaimer />
       {/* Footer */}
       <footer className="border-t border-white/10 bg-neutral-950 pt-20 pb-10 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
@@ -281,4 +283,10 @@ export default function LandingPage() {
     </div>
   );
 }
+
+
+
+
+
+
 
