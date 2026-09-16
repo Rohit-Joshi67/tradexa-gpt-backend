@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Area,
@@ -71,10 +71,10 @@ export default function Dashboard() {
   const confidence = confidenceFrom(summary)
   const avgWin = Number(summary?.averageProfit || 0)
   const avgLoss = Math.abs(Number(summary?.averageLoss || 0))
-  const rr = avgLoss === 0 ? '—' : `${formatNumber(avgWin / avgLoss, 1)}:1`
+  const rr = avgLoss === 0 ? 'â€”' : `${formatNumber(avgWin / avgLoss, 1)}:1`
 
   return (
-    <main className="page">
+    <motion.main initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration: 0.6}} className="page">
       <div className="page-head">
         <div>
           <div className="eyebrow">Overview</div>
@@ -94,10 +94,10 @@ export default function Dashboard() {
       {error ? <div className="alert" style={{ width: 'min(1240px, calc(100% - 32px))', margin: '0 auto 16px' }}>{error}</div> : null}
 
       <section className="kpi-grid">
-        <KpiCard label="HIGHEST P&L" value={formatMoney(summary?.totalPnl)} hint="Net across your journal" tone="green" icon="₹" />
-        <KpiCard label="WIN RATE" value={formatPercent(summary?.winRate)} hint={`${summary?.winningTrades || 0} winning trades`} tone="mint" icon="🏆" />
-        <KpiCard label="AVG. RISK/REWARD" value={rr} hint="Average win vs average loss" tone="lilac" icon="◎" />
-        <KpiCard label="TRADES" value={summary?.totalTrades || 0} hint="Your private ledger" tone="peach" icon="▣" />
+        <KpiCard label="HIGHEST P&L" value={formatMoney(summary?.totalPnl)} hint="Net across your journal" tone="green" icon="â‚¹" />
+        <KpiCard label="WIN RATE" value={formatPercent(summary?.winRate)} hint={`${summary?.winningTrades || 0} winning trades`} tone="mint" icon="ðŸ†" />
+        <KpiCard label="AVG. RISK/REWARD" value={rr} hint="Average win vs average loss" tone="lilac" icon="â—Ž" />
+        <KpiCard label="TRADES" value={summary?.totalTrades || 0} hint="Your private ledger" tone="peach" icon="â–£" />
       </section>
 
       <section className="card" style={{ width: 'min(1240px, calc(100% - 32px))', margin: '0 auto 16px' }}>
@@ -116,7 +116,7 @@ export default function Dashboard() {
             <h3>Cumulative P&L</h3>
           </div>
           {charts.cumulative.length === 0 ? (
-            <EmptyState icon="📈" title="No trades yet" body="Log a trade to see the equity curve." />
+            <EmptyState icon="ðŸ“ˆ" title="No trades yet" body="Log a trade to see the equity curve." />
           ) : (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={charts.cumulative}>
@@ -141,7 +141,7 @@ export default function Dashboard() {
             <Link to="/trades">View All</Link>
           </div>
           {charts.top.length === 0 ? (
-            <EmptyState icon="🏆" title="No top trades yet" body="Start trading to see your best performers." />
+            <EmptyState icon="ðŸ†" title="No top trades yet" body="Start trading to see your best performers." />
           ) : (
             <table className="table">
               <tbody>
@@ -162,10 +162,10 @@ export default function Dashboard() {
         <article className="card">
           <div className="card-title"><h3>Win / Loss Distribution</h3></div>
           {!summary?.totalTrades ? (
-            <EmptyState icon="⚖️" title="No trade outcomes yet" body="Once you start trading, your wins and losses will appear here." />
+            <EmptyState icon="âš–ï¸" title="No trade outcomes yet" body="Once you start trading, your wins and losses will appear here." />
           ) : (
             <div className="stack">
-              <p>Winning {summary.winningTrades} · Losing {summary.losingTrades}</p>
+              <p>Winning {summary.winningTrades} Â· Losing {summary.losingTrades}</p>
               <div style={{ display: 'flex', height: 16, borderRadius: 99, overflow: 'hidden' }}>
                 <div style={{ flex: summary.winningTrades || 1, background: '#22c55e' }} />
                 <div style={{ flex: summary.losingTrades || 1, background: '#f87171' }} />
@@ -183,12 +183,12 @@ export default function Dashboard() {
       <section className="grid-2" style={{ marginTop: 16 }}>
         <article className="card">
           <div className="card-title"><h3>Most Common Mistakes</h3></div>
-          <EmptyState icon="✅" title="No tagged mistakes yet" body="Keep the discipline — tags will land here in a later release." />
+          <EmptyState icon="âœ…" title="No tagged mistakes yet" body="Keep the discipline â€” tags will land here in a later release." />
         </article>
         <article className="card">
           <div className="card-title"><h3>Daily P&L</h3></div>
           {charts.daily.length === 0 ? (
-            <EmptyState icon="📊" title="No daily series yet" body="Closed trades will stack here by day." />
+            <EmptyState icon="ðŸ“Š" title="No daily series yet" body="Closed trades will stack here by day." />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={charts.daily}>
@@ -201,6 +201,7 @@ export default function Dashboard() {
           )}
         </article>
       </section>
-    </main>
+    </motion.main>
   )
 }
+

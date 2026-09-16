@@ -19,7 +19,7 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-4">
           <Link to="/login" className="text-sm font-medium text-white hover:text-indigo-400 transition-colors">Log in</Link>
-          <Link to="/dashboard" className="text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-neutral-200 transition-colors">
+          <Link to="/dashboard" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
             Dashboard
           </Link>
         </div>
@@ -57,7 +57,7 @@ export default function LandingPage() {
             The intelligence layer for disciplined traders. Powerful AI-driven tools, risk management calculators, and financial insights to help you make informed decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/risk-calculator" className="inline-flex items-center justify-center gap-2 bg-white text-black px-8 py-4 rounded-full font-medium text-lg hover:bg-neutral-200 transition-colors">
+            <Link to="/risk-calculator" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-emerald-600 transition-colors">
               Explore Risk Tools <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-white/10 transition-colors">
@@ -203,7 +203,7 @@ export default function LandingPage() {
             <p className="text-xl text-neutral-400 leading-relaxed mb-8">
               Tradexa-GPT helps you explore trading concepts, analyze risk scenarios, understand financial concepts, and structure your thinking around the markets.
             </p>
-            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-medium hover:bg-neutral-200 transition-colors">
+            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-full font-medium hover:bg-emerald-600 transition-colors">
               Try Tradexa-GPT <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
