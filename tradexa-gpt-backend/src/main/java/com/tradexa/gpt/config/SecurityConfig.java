@@ -3,8 +3,8 @@ package com.tradexa.gpt.config;
 import com.tradexa.gpt.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,24 +39,32 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configure(http))
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/api/v1/health",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
 
-                .httpBasic(Customizer.withDefaults())
+                // No httpBasic — pure JWT API. Removed to avoid Spring Security 7
+                // sending WWW-Authenticate: Basic on 401 responses.
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, e) -> {
+                            response.setStatus(401);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write(
+                                "{\"success\":false,\"message\":\"Unauthorized — please login first.\",\"data\":null}"
+                            );
+                        })
+                )
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,
@@ -65,4 +73,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-}
+}
