@@ -7,7 +7,8 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const ComingSoon = lazy(() => import('./pages/ComingSoon'))
-const AboutVision = lazy(() => import('./pages/AboutVision'))
+const OurVision = lazy(() => import('./pages/OurVision'))
+const AboutUs = lazy(() => import('./pages/AboutUs'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -44,8 +45,8 @@ export default function App() {
             <Route path="/risk-calculator" element={<ComingSoon />} />
             <Route path="/blogs" element={<ComingSoon />} />
             <Route path="/blogs/:slug" element={<ComingSoon />} />
-            <Route path="/vision" element={<AboutVision />} />
-            <Route path="/about" element={<AboutVision />} />
+            <Route path="/vision" element={<OurVision />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<ComingSoon />} />
             <Route path="/faq" element={<ComingSoon />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -70,6 +71,8 @@ export default function App() {
     </AuthProvider>
   )
 }
+
+
 
 
 
