@@ -47,10 +47,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/auth/**",
-                                "/api/v1/health",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/v1/auth/**"),
+                                new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/api/v1/health"),
+                                new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/swagger-ui/**"),
+                                new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/v3/api-docs/**")
                         ).permitAll()
                         .anyRequest().authenticated()
 
