@@ -7,6 +7,7 @@ export function uploadCsv(file, broker = 'GENERIC') {
   return unwrap(
     api.post('/api/v1/files/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 300000,
     }),
   )
 }
