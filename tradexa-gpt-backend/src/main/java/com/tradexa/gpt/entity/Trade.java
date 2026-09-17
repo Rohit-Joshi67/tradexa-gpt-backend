@@ -1,11 +1,15 @@
-package com.tradexa.gpt.entity;
+﻿package com.tradexa.gpt.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "trades")
+@Table(name = "trades", indexes = {
+    @Index(name = "idx_trade_user_id", columnList = "user_id"),
+    @Index(name = "idx_trade_entry_time", columnList = "entryTime"),
+    @Index(name = "idx_trade_exit_time", columnList = "exitTime")
+})
 public class Trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -135,3 +139,4 @@ public class Trade {
     }
 
 }
+

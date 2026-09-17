@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Lock, Calculator, TrendingUp, AlertTriangle, Activity, ArrowLeft } from 'lucide-react';
 
 export default function TradingEdgeValidator() {
   const navigate = useNavigate();
-  const isAuthenticated = !!localStorage.getItem('token'); 
+  const { isAuthenticated, user } = useAuth();
+  const isPro = isAuthenticated && user && user.subscription != null; 
 
   const [inputs, setInputs] = useState({
     winRate: 45,
@@ -76,7 +78,7 @@ export default function TradingEdgeValidator() {
             <ArrowLeft className="w-5 h-5" /> Back to Home
           </Link>
           <div className="flex items-center gap-4">
-            {!isAuthenticated && (
+            {!isPro && (
               <Link to="/login" className="text-sm font-medium bg-emerald-500 text-white px-6 py-2 rounded-full hover:bg-emerald-600 transition-colors">
                 Log In for Pro Features
               </Link>
@@ -159,22 +161,24 @@ export default function TradingEdgeValidator() {
             </div>
 
             <div className="relative">
-              {!isAuthenticated && (
+              {!isPro && (
                 <div className="absolute inset-0 z-20 backdrop-blur-xl bg-[#0a0a0a]/60 rounded-3xl flex flex-col items-center justify-center border border-white/5">
                   <div className="bg-neutral-900 border border-white/10 p-8 rounded-3xl text-center max-w-md shadow-2xl">
                     <div className="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
                       <Lock className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-3">Unlock Deep Analytics</h3>
-                    <p className="text-neutral-400 mb-8">Log in to run Monte Carlo simulations, view risk of ruin, survival probabilities, and advanced distribution metrics.</p>
-                    <Link to="/login" className="block w-full py-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-colors">
-                      Log In / Register
-                    </Link>
+                    <p className="text-neutral-400 mb-8">A Tradexa Pro subscription is required to run Monte Carlo simulations, view risk of ruin, survival probabilities, and advanced distribution metrics.</p>
+                    {isAuthenticated ? (
+                      <Link to="/subscription-required" className="block w-full py-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-colors">Upgrade to Pro</Link>
+                    ) : (
+                      <Link to="/login" className="block w-full py-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-colors">Log In / Register</Link>
+                    )}
                   </div>
                 </div>
               )}
 
-              <div className={"space-y-8 " + (!isAuthenticated ? "opacity-30 pointer-events-none select-none blur-sm" : "")}>
+              <div className={"space-y-8 " + (!isPro ? "opacity-30 pointer-events-none select-none blur-sm" : "")}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-neutral-900/50 border border-white/10 rounded-3xl p-6">
                     <h4 className="text-sm font-bold text-neutral-400 uppercase mb-6 flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-amber-400"/> Drawdown & Survival</h4>
