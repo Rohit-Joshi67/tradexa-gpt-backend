@@ -1,4 +1,4 @@
-﻿package com.tradexa.gpt.entity;
+package com.tradexa.gpt.entity;
 
 import jakarta.persistence.*;
 
