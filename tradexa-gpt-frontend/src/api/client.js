@@ -55,9 +55,12 @@ export function apiErrorMessage(error) {
   const payload = error.response?.data
   if (payload?.message) return payload.message
   if (payload?.data && typeof payload.data === 'object') {
-    return Object.values(payload.data).join(' · ')
+    return Object.values(payload.data).join(' \u00b7 ')
   }
-  if (!error.response) return 'Cannot reach the backend. Is it running on port 8080?'
+  if (!error.response) {
+    if (error.code === 'ECONNABORTED') return 'Request timed out. The server is processing your file \u2014 please try again in a moment.'
+    return 'Cannot reach the backend server. Please try again later.'
+  }
   return 'Something went wrong. Please try again.'
 }
 
