@@ -1,17 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
 import { getSummary } from '../api/analytics'
 import { getTrades } from '../api/trades'
 import EmptyState from '../components/EmptyState'
@@ -122,16 +112,16 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={charts.cumulative}>
                 <defs>
-                  <linearGradient id="pnlFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
-                    <stop offset="100%" stopColor="#22c55e" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="#eef2f0" vertical={false} />
+                    <linearGradient id="pnlFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="#ef4444" stopOpacity={0.5} />
+                    </linearGradient>
+                  </defs>
+                <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
                 <XAxis dataKey="label" tickLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="pnl" stroke="#16a34a" fill="url(#pnlFill)" strokeWidth={3} />
+                <Area type="monotone" dataKey="pnl" stroke="#10b981" fill="url(#pnlFill)" strokeWidth={3} />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -193,10 +183,14 @@ export default function Dashboard() {
           ) : (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={charts.daily}>
-                <CartesianGrid stroke="#eef2f0" vertical={false} />
+                <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
                 <XAxis dataKey="label" tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="pnl" radius={[8, 8, 0, 0]} fill="#16a34a" />
+                <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
+                    {charts.daily.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.pnl < 0 ? "#ef4444" : "#10b981"} />
+                    ))}
+                  </Bar>
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -205,5 +199,6 @@ export default function Dashboard() {
     </motion.main>
   )
 }
+
 
 

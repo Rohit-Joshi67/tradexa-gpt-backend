@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+﻿import { useEffect, useState } from 'react'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
 import { getMarketHours, getSummary, getSymbols } from '../api/analytics'
 import EmptyState from '../components/EmptyState'
 import { formatMoney, formatNumber, formatPercent, pnlClass } from '../utils/format'
@@ -31,21 +31,26 @@ export default function Analytics() {
         <article className="card kpi mint"><div className="kpi-label">MEDIAN</div><div className="kpi-value">{formatMoney(summary?.medianPnl)}</div></article>
         <article className="card kpi lilac"><div className="kpi-label">VARIANCE</div><div className="kpi-value">{formatNumber(summary?.variance, 2)}</div></article>
         <article className="card kpi peach"><div className="kpi-label">SKEWNESS</div><div className="kpi-value">{formatNumber(summary?.skewness, 2)}</div></article>
+        <article className="card kpi green"><div className="kpi-label">COEFF OF VAR</div><div className="kpi-value">{formatNumber(summary?.coefficientOfVariation, 2)}%</div></article>
       </section>
 
       <section className="grid-2">
         <article className="card">
           <div className="card-title"><h3>Market hours</h3></div>
           {hours.length === 0 ? (
-            <EmptyState icon="🕒" title="No hourly profile yet" body="Trades with entry times will bucket into sessions." />
+            <EmptyState icon="ðŸ•’" title="No hourly profile yet" body="Trades with entry times will bucket into sessions." />
           ) : (
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={hours}>
-                <CartesianGrid stroke="#eef2f0" vertical={false} />
+                <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
                 <XAxis dataKey="hourLabel" hide />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="totalPnl" fill="#0f766e" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="totalPnl" radius={[4, 4, 0, 0]}>
+                  {hours.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.totalPnl < 0 ? "#ef4444" : "#10b981"} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -75,3 +80,4 @@ export default function Analytics() {
     </main>
   )
 }
+
