@@ -64,11 +64,17 @@ public final class StatisticsCalculator {
             sumSquaredDiff += diff * diff;
         }
 
-        return roundStat(sumSquaredDiff / (values.size() - 1));
+        return roundStat(sumSquaredDiff / values.size());
     }
 
     public static double standardDeviation(List<BigDecimal> values) {
         return roundStat(Math.sqrt(variance(values)));
+    }
+
+    public static double coefficientOfVariation(List<BigDecimal> values) {
+        double mu = mean(values).doubleValue();
+        if (mu == 0) return 0.0;
+        return roundStat((standardDeviation(values) / Math.abs(mu)) * 100);
     }
 
     public static double skewness(List<BigDecimal> values) {
@@ -96,7 +102,7 @@ public final class StatisticsCalculator {
 
     /**
      * Trading expectancy per trade:
-     * (winRate × averageWin) + (lossRate × averageLoss)
+     * (winRate Ã— averageWin) + (lossRate Ã— averageLoss)
      * averageLoss is expected to be negative for losing trades.
      */
     public static BigDecimal expectancy(
@@ -130,3 +136,4 @@ public final class StatisticsCalculator {
                 .doubleValue();
     }
 }
+

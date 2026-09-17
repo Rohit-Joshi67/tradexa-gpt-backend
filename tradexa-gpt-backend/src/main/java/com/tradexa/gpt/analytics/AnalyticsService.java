@@ -74,6 +74,7 @@ public class AnalyticsService {
         response.setVariance(StatisticsCalculator.variance(pnlValues));
         response.setStandardDeviation(StatisticsCalculator.standardDeviation(pnlValues));
         response.setSkewness(StatisticsCalculator.skewness(pnlValues));
+        response.setCoefficientOfVariation(StatisticsCalculator.coefficientOfVariation(pnlValues));
         response.setExpectancy(StatisticsCalculator.expectancy(
                 winRate,
                 averageProfit,
@@ -185,7 +186,7 @@ public class AnalyticsService {
     private MarketHourAnalyticsResponse createEmptyHourBucket(int hour) {
         MarketHourAnalyticsResponse response = new MarketHourAnalyticsResponse();
         response.setHour(hour);
-        response.setHourLabel(String.format("%02d:00–%02d:59", hour, hour));
+        response.setHourLabel(String.format("%02d:00â€“%02d:59", hour, hour));
         response.setMarketSession(resolveMarketSession(hour));
         response.setTotalTrades(0);
         response.setWinningTrades(0);
@@ -215,3 +216,4 @@ public class AnalyticsService {
         return "AFTER_HOURS";
     }
 }
+

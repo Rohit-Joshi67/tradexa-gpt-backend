@@ -19,6 +19,7 @@ public class AnalyticsSummaryResponse {
     private double variance;
     private double standardDeviation;
     private double skewness;
+    private double coefficientOfVariation;
     private BigDecimal expectancy;
 
     public long getTotalTrades() {
@@ -109,6 +110,9 @@ public class AnalyticsSummaryResponse {
         this.standardDeviation = standardDeviation;
     }
 
+    public double getCoefficientOfVariation() { return coefficientOfVariation; }
+    public void setCoefficientOfVariation(double coefficientOfVariation) { this.coefficientOfVariation = coefficientOfVariation; }
+
     public double getSkewness() {
         return skewness;
     }
@@ -125,3 +129,4 @@ public class AnalyticsSummaryResponse {
         this.expectancy = expectancy;
     }
 }
+

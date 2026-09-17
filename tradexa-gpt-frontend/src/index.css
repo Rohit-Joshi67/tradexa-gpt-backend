@@ -261,10 +261,10 @@ textarea:focus {
   overflow: hidden;
 }
 
-.kpi.green { background: linear-gradient(180deg, #f0fdf4, #ffffff); }
-.kpi.mint { background: linear-gradient(180deg, #ecfeff, #ffffff); }
-.kpi.lilac { background: linear-gradient(180deg, #f5f3ff, #ffffff); }
-.kpi.peach { background: linear-gradient(180deg, #fff7ed, #ffffff); }
+.kpi.green { background: linear-gradient(180deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02)); border: 1px solid rgba(16, 185, 129, 0.2); }
+.kpi.mint { background: linear-gradient(180deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.02)); border: 1px solid rgba(56, 189, 248, 0.2); }
+.kpi.lilac { background: linear-gradient(180deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.02)); border: 1px solid rgba(139, 92, 246, 0.2); }
+.kpi.peach { background: linear-gradient(180deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.02)); border: 1px solid rgba(249, 115, 22, 0.2); }
 
 .kpi-label {
   display: flex;
@@ -425,6 +425,7 @@ textarea:focus {
     display: none;
   }
 }
+
 
 
 
