@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const ComingSoon = lazy(() => import('./pages/ComingSoon'))
 const TradexaGPT = lazy(() => import('./pages/TradexaGPT'))
+const TradingEdgeValidator = lazy(() => import('./pages/TradingEdgeValidator'))
 const OurVision = lazy(() => import('./pages/OurVision'))
 const AboutUs = lazy(() => import('./pages/AboutUs'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
@@ -43,6 +44,7 @@ export default function App() {
             
             {/* Coming Soon Routes */}
             <Route path="/tradexa-gpt" element={<TradexaGPT />} />
+          <Route path="/tools/edge-validator" element={<TradingEdgeValidator />} />
             <Route path="/risk-calculator" element={<ComingSoon />} />
             <Route path="/blogs" element={<ComingSoon />} />
             <Route path="/blogs/:slug" element={<ComingSoon />} />
@@ -72,6 +74,7 @@ export default function App() {
     </AuthProvider>
   )
 }
+
 
 
 

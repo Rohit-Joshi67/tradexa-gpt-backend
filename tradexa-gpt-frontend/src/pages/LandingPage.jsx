@@ -15,7 +15,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-400">
           <Link to="/tradexa-gpt" className="hover:text-white transition-colors">Tradexa-GPT</Link>
           <Link to="/blogs" className="hover:text-white transition-colors">Finance Blogs</Link>
-          <Link to="/risk-calculator" className="hover:text-white transition-colors">Risk Calculator</Link>
+          <Link to="/tools/edge-validator" className="hover:text-white transition-colors">Edge Validator</Link>
           <Link to="/vision" className="hover:text-white transition-colors">Our Vision</Link>
         </div>
         <div className="flex items-center gap-4">
@@ -58,8 +58,8 @@ export default function LandingPage() {
             The intelligence layer for disciplined traders. Powerful AI-driven tools, risk management calculators, and financial insights to help you make informed decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/risk-calculator" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-emerald-600 transition-colors">
-              Explore Risk Tools <ArrowRight className="w-5 h-5" />
+            <Link to="/tools/edge-validator" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-emerald-600 transition-colors">
+              Explore Edge Validator <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-white/10 transition-colors">
               Meet Tradexa-GPT
@@ -207,11 +207,11 @@ export default function LandingPage() {
           </Link>
           
           {/* Card 2 */}
-          <Link to="/risk-calculator" className="group relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden hover:border-emerald-500/50 transition-colors p-8 flex flex-col justify-end">
+          <Link to="/tools/edge-validator" className="group relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden hover:border-emerald-500/50 transition-colors p-8 flex flex-col justify-end">
             <ShieldAlert className="w-12 h-12 text-emerald-400 mb-auto" />
-            <h3 className="text-2xl font-bold mb-2">Risk Calculator</h3>
-            <p className="text-neutral-400 mb-6 text-sm">Calculate position size and exposure before entering.</p>
-            <span className="inline-flex items-center text-sm font-medium text-white gap-2 group-hover:gap-3 transition-all">Calculate Risk <ArrowRight className="w-4 h-4"/></span>
+            <h3 className="text-2xl font-bold mb-2">Edge Validator</h3>
+            <p className="text-neutral-400 mb-6 text-sm">Calculate your strategy edge, risk of ruin, and run Monte Carlo simulations.</p>
+            <span className="inline-flex items-center text-sm font-medium text-white gap-2 group-hover:gap-3 transition-all">Calculate Edge <ArrowRight className="w-4 h-4"/></span>
           </Link>
 
           {/* Card 3 */}
@@ -284,7 +284,7 @@ export default function LandingPage() {
             <h4 className="font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-3 text-sm text-neutral-400">
               <li><Link to="/tradexa-gpt" className="hover:text-white">Tradexa-GPT</Link></li>
-              <li><Link to="/risk-calculator" className="hover:text-white">Risk Calculator</Link></li>
+              <li><Link to="/tools/edge-validator" className="hover:text-white">Edge Validator</Link></li>
               <li><Link to="/blogs" className="hover:text-white">Finance Blogs</Link></li>
               <li><Link to="/login" className="hover:text-white">Trading Tools</Link></li>
             </ul>
@@ -317,5 +317,6 @@ export default function LandingPage() {
     </div>
   );
 }
+
 
 
