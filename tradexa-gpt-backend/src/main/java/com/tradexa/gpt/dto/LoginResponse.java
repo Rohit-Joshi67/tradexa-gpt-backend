@@ -1,4 +1,4 @@
-﻿package com.tradexa.gpt.dto;
+package com.tradexa.gpt.dto;
 
 public class LoginResponse {
 

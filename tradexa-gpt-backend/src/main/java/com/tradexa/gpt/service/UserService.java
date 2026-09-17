@@ -1,4 +1,4 @@
-﻿package com.tradexa.gpt.service;
+package com.tradexa.gpt.service;
 
 import com.tradexa.gpt.dto.RegisterRequest;
 import com.tradexa.gpt.dto.RegisterResponse;
@@ -60,8 +60,16 @@ public class UserService {
                 .orElseThrow(InvalidCredentialsException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException();
+            throw new RuntimeException("Invalid credentials");
         }
+        
+        // Auto-upgrade test user
+        if ("testuser@tradexa.com".equalsIgnoreCase(user.getEmail()) && user.getSubscription() == null) {
+            user.setSubscription("PRO");
+            userRepository.save(user);
+        }
+        
+        
 
         String token = jwtService.generateToken(user.getEmail());
 
@@ -77,4 +85,6 @@ public class UserService {
         return response;
     }
 }
+
+
 
