@@ -19,6 +19,7 @@ const Analytics = lazy(() => import('./pages/Analytics'))
 const Upload = lazy(() => import('./pages/Upload'))
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
+const SubscriptionRequired = lazy(() => import('./pages/SubscriptionRequired'))
 
 function GuestOnly({ children }) {
   const { isAuthenticated } = useAuth()
@@ -58,6 +59,7 @@ export default function App() {
 
             <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
             <Route path="/register" element={<GuestOnly><Register /></GuestOnly>} />
+            <Route path="/subscription-required" element={<SubscriptionRequired />} />
             
             <Route element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -74,6 +76,7 @@ export default function App() {
     </AuthProvider>
   )
 }
+
 
 
 

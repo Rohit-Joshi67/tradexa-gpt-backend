@@ -1,4 +1,4 @@
-package com.tradexa.gpt.service;
+﻿package com.tradexa.gpt.service;
 
 import com.tradexa.gpt.dto.RegisterRequest;
 import com.tradexa.gpt.dto.RegisterResponse;
@@ -70,9 +70,11 @@ public class UserService {
         response.setId(user.getId());
         response.setToken(token);
         response.setEmail(user.getEmail());
+        response.setSubscription(user.getSubscription());
         response.setName(user.getName());
         response.setRole(user.getRole().name());
 
         return response;
     }
 }
+

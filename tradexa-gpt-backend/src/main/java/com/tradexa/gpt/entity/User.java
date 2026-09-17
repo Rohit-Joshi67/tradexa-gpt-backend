@@ -1,4 +1,4 @@
-package com.tradexa.gpt.entity;
+﻿package com.tradexa.gpt.entity;
 
 import jakarta.persistence.*;
 
@@ -20,6 +20,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    private String subscription;
 
     public User() {
 
@@ -57,6 +59,9 @@ public class User {
         this.password = password;
     }
 
+    public String getSubscription() { return subscription; }
+    public void setSubscription(String subscription) { this.subscription = subscription; }
+
     public UserRole getRole() {
         return role;
     }
@@ -65,3 +70,4 @@ public class User {
         this.role = role;
     }
 }
+

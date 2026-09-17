@@ -1,10 +1,11 @@
-package com.tradexa.gpt.dto;
+﻿package com.tradexa.gpt.dto;
 
 public class LoginResponse {
 
     private Long id;
     private String name;
     private String email;
+    private String subscription;
     private String role;
     private String token;
 
@@ -26,6 +27,9 @@ public class LoginResponse {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getSubscription() { return subscription; }
+    public void setSubscription(String subscription) { this.subscription = subscription; }
 
     public String getEmail() {
         return email;

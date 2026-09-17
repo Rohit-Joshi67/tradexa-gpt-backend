@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+﻿import { createContext, useContext, useMemo, useState } from 'react'
 import { clearSession, getStoredSession, storeSession } from '../api/client'
 import * as authApi from '../api/auth'
 
@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
           email: session.email,
           role: session.role,
           token: session.token,
+          subscription: session.subscription,
         }
         storeSession(next)
         setUser(next)
@@ -43,3 +44,4 @@ export function useAuth() {
   if (!context) throw new Error('useAuth must be used inside AuthProvider')
   return context
 }
+
