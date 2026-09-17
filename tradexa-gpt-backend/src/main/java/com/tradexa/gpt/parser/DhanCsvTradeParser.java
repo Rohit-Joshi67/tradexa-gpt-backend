@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
@@ -31,7 +30,6 @@ public class DhanCsvTradeParser implements TradeParser {
     @Override
     public List<Trade> parse(MultipartFile file) {
         List<RawTrade> rawTrades = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
@@ -41,20 +39,19 @@ public class DhanCsvTradeParser implements TradeParser {
                     .parse(reader);
 
             for (CSVRecord record : csvParser) {
-                if (!"Traded".equalsIgnoreCase(record.get("Status"))) {
-                    continue;
-                }
-
                 RawTrade rt = new RawTrade();
-                rt.symbol = record.get("Name");
-                String sideStr = record.get("Buy/Sell");
-                rt.side = "BUY".equalsIgnoreCase(sideStr) ? TradeSide.BUY : TradeSide.SELL;
-                rt.quantity = Integer.parseInt(record.get("Quantity/Lot").trim());
-                rt.price = new BigDecimal(record.get("Trade Price").trim());
+                rt.symbol = record.get("symbol").trim();
                 
-                String dateStr = record.get("Date").trim();
-                String timeStr = record.get("Time").trim();
-                rt.time = LocalDateTime.parse(dateStr + " " + timeStr, formatter);
+                String sideStr = record.get("trade_type").trim();
+                rt.side = "buy".equalsIgnoreCase(sideStr) ? TradeSide.BUY : TradeSide.SELL;
+                
+                double rawQty = Double.parseDouble(record.get("quantity").trim());
+                rt.quantity = (int) rawQty;
+                
+                rt.price = new BigDecimal(record.get("price").trim());
+                
+                String timeStr = record.get("order_execution_time").trim();
+                rt.time = LocalDateTime.parse(timeStr);
                 
                 rawTrades.add(rt);
             }
@@ -143,4 +140,3 @@ public class DhanCsvTradeParser implements TradeParser {
         }
     }
 }
-
