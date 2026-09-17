@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
@@ -30,6 +31,7 @@ public class DhanCsvTradeParser implements TradeParser {
     @Override
     public List<Trade> parse(MultipartFile file) {
         List<RawTrade> rawTrades = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
@@ -38,22 +40,36 @@ public class DhanCsvTradeParser implements TradeParser {
                     .build()
                     .parse(reader);
 
+            List<String> headers = csvParser.getHeaderNames();
+            boolean isNewFormat = headers.contains("symbol") && headers.contains("trade_type");
+
             for (CSVRecord record : csvParser) {
                 RawTrade rt = new RawTrade();
-                rt.symbol = record.get("symbol").trim();
                 
-                String sideStr = record.get("trade_type").trim();
-                rt.side = "buy".equalsIgnoreCase(sideStr) ? TradeSide.BUY : TradeSide.SELL;
+                if (isNewFormat) {
+                    rt.symbol = record.get("symbol").trim();
+                    String sideStr = record.get("trade_type").trim();
+                    rt.side = "buy".equalsIgnoreCase(sideStr) ? TradeSide.BUY : TradeSide.SELL;
+                    double rawQty = Double.parseDouble(record.get("quantity").trim());
+                    rt.quantity = (int) rawQty;
+                    rt.price = new BigDecimal(record.get("price").trim());
+                    String timeStr = record.get("order_execution_time").trim();
+                    rt.time = LocalDateTime.parse(timeStr);
+                } else {
+                    if (!"Traded".equalsIgnoreCase(record.get("Status"))) continue;
+                    rt.symbol = record.get("Name").trim();
+                    String sideStr = record.get("Buy/Sell").trim();
+                    rt.side = "BUY".equalsIgnoreCase(sideStr) ? TradeSide.BUY : TradeSide.SELL;
+                    rt.quantity = Integer.parseInt(record.get("Quantity/Lot").trim());
+                    rt.price = new BigDecimal(record.get("Trade Price").trim());
+                    String dateStr = record.get("Date").trim();
+                    String timeStr = record.get("Time").trim();
+                    rt.time = LocalDateTime.parse(dateStr + " " + timeStr, formatter);
+                }
                 
-                double rawQty = Double.parseDouble(record.get("quantity").trim());
-                rt.quantity = (int) rawQty;
-                
-                rt.price = new BigDecimal(record.get("price").trim());
-                
-                String timeStr = record.get("order_execution_time").trim();
-                rt.time = LocalDateTime.parse(timeStr);
-                
-                rawTrades.add(rt);
+                if (rt.quantity > 0) {
+                    rawTrades.add(rt);
+                }
             }
         } catch (Exception e) {
             throw new CsvParsingException("Failed to parse Dhan CSV file: " + e.getMessage());
