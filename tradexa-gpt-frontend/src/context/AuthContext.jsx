@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
           email: session.email,
           role: session.role,
           token: session.token,
-          subscription: session.email === 'testuser@tradexa.com' ? 'PRO' : session.subscription,
+          subscription: session.subscription,
         }
         storeSession(next)
         setUser(next)
@@ -44,5 +44,6 @@ export function useAuth() {
   if (!context) throw new Error('useAuth must be used inside AuthProvider')
   return context
 }
+
 
 
