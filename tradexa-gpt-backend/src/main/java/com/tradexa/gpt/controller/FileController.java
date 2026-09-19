@@ -1,6 +1,7 @@
 package com.tradexa.gpt.controller;
 
 import com.tradexa.gpt.common.ApiResponse;
+import com.tradexa.gpt.billing.RequireJournalAccess;
 import com.tradexa.gpt.dto.UploadResponseDTO;
 import com.tradexa.gpt.service.FileService;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    @RequireJournalAccess
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<UploadResponseDTO>> uploadFile(
             @RequestParam("file") MultipartFile file,

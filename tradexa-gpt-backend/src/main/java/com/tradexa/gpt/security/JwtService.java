@@ -2,13 +2,13 @@ package com.tradexa.gpt.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -17,23 +17,55 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
-    private long jwtExpiration;
+    /**
+     * Short-lived access token lifetime (default 15 minutes).
+     * The legacy {@code jwt.expiration} property is retired.
+     */
+    @Value("${jwt.access-expiration:900000}")
+    private long accessExpiration;
 
-    // Generate JWT Token
-    public String generateToken(String email) {
+    /** Refresh-token lifetime (opaque DB tokens are used; kept for property compatibility). */
+    @Value("${jwt.refresh-expiration:604800000}")
+    @SuppressWarnings("unused")
+    private long refreshExpiration;
 
+    public static final String TOKEN_TYPE_CLAIM = "type";
+    public static final String TOKEN_TYPE_ACCESS = "access";
+
+    /**
+     * Short-lived access token for API calls (Authorization: Bearer).
+     * Carries a {@code type=access} claim — the auth filter rejects any
+     * other token type presented as a Bearer token.
+     */
+    public String generateAccessToken(String email) {
         return Jwts.builder()
                 .subject(email)
+                .claim(TOKEN_TYPE_CLAIM, TOKEN_TYPE_ACCESS)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    /** True only for a live, correctly-typed access token belonging to this email. */
+    public boolean isAccessTokenValid(String token, String email) {
+        try {
+            return TOKEN_TYPE_ACCESS.equals(extractTokenType(token))
+                    && extractUsername(token).equals(email)
+                    && !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Extract Email from Token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get(TOKEN_TYPE_CLAIM, String.class));
     }
 
     // Extract Expiration
@@ -47,13 +79,6 @@ public class JwtService {
 
         Claims claims = extractAllClaims(token);
         return resolver.apply(claims);
-    }
-
-    // Validate Token
-    public boolean isTokenValid(String token, String email) {
-
-        return extractUsername(token).equals(email)
-                && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

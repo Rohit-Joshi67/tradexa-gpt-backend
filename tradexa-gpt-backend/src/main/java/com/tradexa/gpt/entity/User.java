@@ -1,6 +1,7 @@
 package com.tradexa.gpt.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,12 @@ public class User {
     private UserRole role;
 
     private String subscription;
+
+    @Column(name = "trial_ends_at")
+    private Instant trialEndsAt;   // 3-day free journal trial, set at registration
+
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified = true;
 
     public User() {
 
@@ -61,6 +68,12 @@ public class User {
 
     public String getSubscription() { return subscription; }
     public void setSubscription(String subscription) { this.subscription = subscription; }
+
+    public Instant getTrialEndsAt() { return trialEndsAt; }
+    public void setTrialEndsAt(Instant trialEndsAt) { this.trialEndsAt = trialEndsAt; }
+
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
 
     public UserRole getRole() {
         return role;

@@ -2,27 +2,45 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import HorizontalDisclaimer from '../components/HorizontalDisclaimer';
-import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown, DollarSign, TrendingUp, TrendingDown, PieChart } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { usePlan } from '../context/PlanContext';
+import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown, IndianRupee, TrendingUp, TrendingDown, PieChart } from 'lucide-react';
 
 const Navbar = () => {
+  const { plan } = usePlan();
+  const { isAuthenticated, authReady } = useAuth();
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-neutral-950/50 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white tracking-tight">
           <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-sm">T</div>
-          TheFinanceWorld
+          Tradexa GPT
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-400">
           <Link to="/tradexa-gpt" className="hover:text-white transition-colors">Tradexa-GPT</Link>
           <Link to="/blogs" className="hover:text-white transition-colors">Finance Blogs</Link>
           <Link to="/tools/edge-validator" className="hover:text-white transition-colors">Edge Validator</Link>
+          <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
           <Link to="/vision" className="hover:text-white transition-colors">Our Vision</Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm font-medium text-white hover:text-indigo-400 transition-colors">Log in</Link>
-          <Link to="/dashboard" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
-            Dashboard
-          </Link>
+          {plan === 'PRO' && (
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 rounded-full px-2.5 py-1">
+              Pro
+            </span>
+          )}
+          {!authReady ? null : isAuthenticated ? (
+            <Link to="/dashboard" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-medium text-white hover:text-indigo-400 transition-colors">Log in</Link>
+              <Link to="/register" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
@@ -38,7 +56,7 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-40 pb-20 px-6 max-w-7xl mx-auto min-h-screen flex flex-col justify-center">
+      <section className="relative pt-40 pb-20 px-6 max-w-7xl mx-auto min-h-screen grid lg:grid-cols-[1fr_1.05fr] gap-16 items-center">
         <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-[120px] opacity-50"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[100px] opacity-30"></div>
@@ -70,7 +88,7 @@ export default function LandingPage() {
         {/* Abstract Chart Graphic */}
         <motion.div 
           style={{ y }}
-          className="absolute right-0 top-1/2 -translate-y-1/2 w-[55%] h-[600px] hidden lg:block pointer-events-none"
+          className="relative hidden lg:block h-[600px] pointer-events-none"
         >
           <div className="w-full h-full border border-white/10 rounded-3xl bg-neutral-900/40 backdrop-blur-md p-8 relative overflow-hidden shadow-2xl">
             {/* Animated Candlesticks Background */}
@@ -95,9 +113,9 @@ export default function LandingPage() {
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Net P&L</span>
-                <DollarSign className="w-4 h-4 text-indigo-400" />
+                <IndianRupee className="w-4 h-4 text-indigo-400" />
               </div>
-              <span className="text-3xl font-bold text-white block mb-1">+,290</span>
+              <span className="text-3xl font-bold text-white block mb-1">₹4,29,290</span>
               <span className="text-xs text-emerald-400 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> +12.4% this week</span>
             </motion.div>
 
@@ -277,7 +295,7 @@ export default function LandingPage() {
           <div>
             <div className="flex items-center gap-2 text-xl font-bold text-white mb-6">
               <div className="w-6 h-6 rounded-md bg-indigo-500 flex items-center justify-center text-xs">T</div>
-              Tradexa
+              Tradexa GPT
             </div>
           </div>
           <div>
@@ -308,9 +326,9 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 text-xs text-neutral-500 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2026 Tradexa. All rights reserved.</p>
+          <p>© 2026 Tradexa GPT. All rights reserved.</p>
           <p className="max-w-2xl text-center md:text-right">
-            Tradexa provides educational and informational tools. Nothing on this platform constitutes financial, investment, or trading advice. Trading and investing involve risk, and users should make decisions based on their own circumstances.
+            Tradexa GPT provides educational and informational tools. Nothing on this platform constitutes financial, investment, or trading advice. Trading and investing involve risk, and users should make decisions based on their own circumstances.
           </p>
         </div>
       </footer>

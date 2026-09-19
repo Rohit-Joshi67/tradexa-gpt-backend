@@ -23,6 +23,20 @@ export function formatPercent(value) {
   return `${formatNumber(value, 1)}%`
 }
 
+/**
+ * Format an integer paise amount as rupees with Indian digit grouping.
+ * e.g. formatPaise(199900) -> "₹1,999"
+ */
+export function formatPaise(paise) {
+  const number = Number(paise ?? 0)
+  if (Number.isNaN(number)) return '₹0'
+  return (number / 100).toLocaleString('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  })
+}
+
 export function pnlClass(value) {
   const number = Number(value ?? 0)
   if (number > 0) return 'positive'

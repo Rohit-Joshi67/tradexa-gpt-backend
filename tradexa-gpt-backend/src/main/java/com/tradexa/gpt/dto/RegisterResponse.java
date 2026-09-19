@@ -5,6 +5,8 @@ public class RegisterResponse {
     private String name;
     private String email;
     private String role;
+    /** True when the user must verify their email before signing in. */
+    private boolean emailVerificationRequired;
 
     public RegisterResponse() {
     }
@@ -39,5 +41,13 @@ public class RegisterResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isEmailVerificationRequired() {
+        return emailVerificationRequired;
+    }
+
+    public void setEmailVerificationRequired(boolean emailVerificationRequired) {
+        this.emailVerificationRequired = emailVerificationRequired;
     }
 }

@@ -2,7 +2,7 @@ services:
   - type: web
     name: tradexa-gpt-backend
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./tradexa-gpt-backend/Dockerfile
     plan: free
     healthCheckPath: /api/v1/health
     envVars:
@@ -14,7 +14,54 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: JWT_EXPIRATION
-        value: "86400000"
+      - key: JWT_ACCESS_EXPIRATION
+        sync: false
+      - key: JWT_REFRESH_EXPIRATION
+        sync: false
       - key: ALLOWED_ORIGINS
         sync: false
+      # Razorpay billing (fill in after connecting the Razorpay account;
+      # see BILLING_SETUP.md). App boots without them; billing returns 503.
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: RAZORPAY_PLAN_PRO_MONTHLY
+        sync: false
+      - key: RAZORPAY_PLAN_PRO_MONTHLY_LAUNCH
+        sync: false
+      - key: RAZORPAY_PLAN_PRO_YEARLY
+        sync: false
+      - key: RAZORPAY_PLAN_PRO_YEARLY_LAUNCH
+        sync: false
+      # Auth cookies (Phase 0 hardening). Required for cross-site
+      # (Vercel frontend + Render backend) cookie sessions.
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+      - key: AUTH_COOKIE_SAMESITE
+        value: "None"
+      # Hide Swagger/OpenAPI docs in production.
+      - key: SWAGGER_ENABLED
+        value: "false"
+      # Email (optional for now — app boots without it; registration
+      # auto-verifies and password reset returns 503 until configured).
+      - key: EMAIL_PROVIDER
+        sync: false
+      - key: EMAIL_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      # Tradexa-GPT copilot LLM (optional for now — app boots without it;
+      # copilot endpoints return 503 until GEMINI_API_KEY is set).
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: "gemini-2.0-flash"
+      - key: LLM_MAX_TOKENS
+        value: "1024"
+      - key: LLM_ALLOW_PAID
+        value: "false"
+      - key: COPILOT_DAILY_LIMIT
+        value: "50"

@@ -10,7 +10,7 @@ export default function TradexaGPT() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white tracking-tight">
             <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-sm">T</div>
-            TheFinanceWorld
+            Tradexa GPT
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/login" className="text-sm font-medium bg-indigo-500 text-white px-6 py-2 rounded-full hover:bg-indigo-600 transition-colors">

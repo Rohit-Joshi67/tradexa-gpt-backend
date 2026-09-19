@@ -1,6 +1,7 @@
 package com.tradexa.gpt.controller;
 
 import com.tradexa.gpt.common.ApiResponse;
+import com.tradexa.gpt.billing.RequireJournalAccess;
 import com.tradexa.gpt.dto.TradeRequest;
 import com.tradexa.gpt.dto.TradeResponse;
 import com.tradexa.gpt.entity.Trade;
@@ -21,6 +22,7 @@ public class TradeController {
         this.tradeService = tradeService;
     }
 
+    @RequireJournalAccess
     @PostMapping
     public ResponseEntity<ApiResponse<TradeResponse>> addTrade(
             @Valid
@@ -38,6 +40,7 @@ public class TradeController {
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 
+    @RequireJournalAccess
     @GetMapping
     public ResponseEntity<ApiResponse<List<TradeResponse>>> getAllTrades() {
 
@@ -53,6 +56,7 @@ public class TradeController {
         return ResponseEntity.ok(response);
     }
 
+    @RequireJournalAccess
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TradeResponse>> getTradeById(
             @PathVariable Integer id
@@ -71,6 +75,7 @@ public class TradeController {
     }
 
 
+        @RequireJournalAccess
         @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTrade(
             @PathVariable Integer id
@@ -84,6 +89,7 @@ public class TradeController {
         return ResponseEntity.ok(response);
     }
 
+    @RequireJournalAccess
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TradeResponse>> updateTrade(
             @PathVariable Integer id,

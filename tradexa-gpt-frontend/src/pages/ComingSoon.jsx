@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { FlaskConical } from 'lucide-react';
 
 export default function ComingSoon() {
   return (
@@ -19,9 +20,9 @@ export default function ComingSoon() {
         <motion.div
           animate={{ rotate: [0, 10, -10, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="text-6xl mb-6 inline-block"
+          className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-indigo-500/15 border border-indigo-500/30"
         >
-          ??
+          <FlaskConical className="w-10 h-10 text-indigo-400" />
         </motion.div>
         
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">

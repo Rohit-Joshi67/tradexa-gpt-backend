@@ -1,6 +1,7 @@
 package com.tradexa.gpt.controller;
 
 import com.tradexa.gpt.common.ApiResponse;
+import com.tradexa.gpt.billing.RequireJournalAccess;
 import com.tradexa.gpt.dto.AnalyticsSummaryResponse;
 import com.tradexa.gpt.analytics.AnalyticsService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class AnalyticsController {
         this.analyticsService = analyticsService;
     }
 
+    @RequireJournalAccess
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<AnalyticsSummaryResponse>> getSummary() {
 
@@ -36,6 +38,7 @@ public class AnalyticsController {
         return ResponseEntity.ok(response);
     }
 
+    @RequireJournalAccess
     @GetMapping("/symbols")
     public ResponseEntity<ApiResponse<List<SymbolAnalyticsResponse>>>getSymbolAnalytics() {
 
@@ -52,6 +55,7 @@ public class AnalyticsController {
         return ResponseEntity.ok(response);
     }
 
+    @RequireJournalAccess
     @GetMapping("/market-hours")
     public ResponseEntity<ApiResponse<List<MarketHourAnalyticsResponse>>> getMarketHourAnalytics() {
 

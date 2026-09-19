@@ -1,12 +1,16 @@
 package com.tradexa.gpt.config;
 
 import com.tradexa.gpt.security.JwtAuthenticationFilter;
+import com.tradexa.gpt.security.RateLimitFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,12 +18,24 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    /**
+     * Swagger UI / OpenAPI docs are public in dev only. Set
+     * {@code SWAGGER_ENABLED=false} (or activate the {@code prod} profile)
+     * to hide them in production.
+     */
+    @Value("${app.swagger.enabled:true}")
+    private boolean swaggerEnabled;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          RateLimitFilter rateLimitFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -45,16 +61,26 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/auth/**",
-                                "/api/v1/health",
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(
+                            "/api/v1/auth/**",
+                            "/api/v1/health",
+                            "/api/v1/billing/webhook",
+                            "/sitemap.xml"
+                    ).permitAll();
+                    // Articles are free, ad-supported content: public to read.
+                    auth.requestMatchers(
+                            HttpMethod.GET,
+                            "/api/v1/articles/**"
+                    ).permitAll();
+                    if (swaggerEnabled) {
+                        auth.requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-
-                )
+                        ).permitAll();
+                    }
+                    auth.anyRequest().authenticated();
+                })
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, e) -> {
@@ -67,10 +93,14 @@ public class SecurityConfig {
                 )
 
                 .addFilterBefore(
+                        rateLimitFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 );
 
         return http.build();
     }
-}
+}

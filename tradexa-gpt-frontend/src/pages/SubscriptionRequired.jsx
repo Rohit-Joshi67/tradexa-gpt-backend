@@ -22,9 +22,9 @@ export default function SubscriptionRequired() {
         </p>
         
         <div className="space-y-4">
-          <button className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-neutral-200 transition-colors">
-            Upgrade to Pro (Coming Soon)
-          </button>
+          <Link to="/pricing" className="block w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-neutral-200 transition-colors text-center">
+            Upgrade to Pro
+          </Link>
           
           <div className="flex gap-4">
             <Link to="/" className="flex-1 bg-white/5 border border-white/10 text-white font-semibold py-3 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
