@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -45,21 +46,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        String email = jwtService.extractUsername(token);
+        String email;
+        try {
+            email = jwtService.extractUsername(token);
+        } catch (Exception e) {
+            // Malformed/forged token — let the request continue unauthenticated.
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (email != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 
             Optional<User> optionalUser = userRepository.findByEmail(email);
 
+            // Only short-lived ACCESS tokens authenticate API calls; anything
+            // else (missing type claim, wrong type) is rejected.
             if (optionalUser.isPresent()
-                    && jwtService.isTokenValid(token, email)) {
+                    && jwtService.isAccessTokenValid(token, email)) {
+
+                User user = optionalUser.get();
+                List<SimpleGrantedAuthority> authorities = user.getRole() == null
+                        ? List.of()
+                        : List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
                 UserDetails userDetails =
                         new org.springframework.security.core.userdetails.User(
-                                optionalUser.get().getEmail(),
-                                optionalUser.get().getPassword(),
-                                Collections.emptyList()
+                                user.getEmail(),
+                                user.getPassword(),
+                                authorities
                         );
 
                 UsernamePasswordAuthenticationToken authentication =

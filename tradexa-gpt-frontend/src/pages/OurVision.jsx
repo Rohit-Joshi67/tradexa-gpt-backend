@@ -1,17 +1,23 @@
 ﻿import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function OurVision() {
   const { scrollYProgress } = useScroll();
+  const { isAuthenticated, authReady } = useAuth();
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 1.5]);
   const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   return (
     <div className="min-h-[400vh] bg-[#0a0a0a] text-white overflow-hidden relative">
       <nav className="fixed top-0 w-full z-50 p-6 flex justify-between items-center bg-black/50 backdrop-blur-md">
-        <Link to="/" className="font-bold text-xl">T TheFinanceWorld</Link>
-        <Link to="/dashboard" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Dashboard</Link>
+        <Link to="/" className="font-bold text-xl">T Tradexa GPT</Link>
+        {authReady && isAuthenticated ? (
+          <Link to="/dashboard" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Dashboard</Link>
+        ) : (
+          <Link to="/register" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Get started</Link>
+        )}
       </nav>
       
       <motion.div 

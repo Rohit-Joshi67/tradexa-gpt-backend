@@ -1,12 +1,18 @@
 ﻿import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function AboutUs() {
+  const { isAuthenticated, authReady } = useAuth();
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-neutral-300 p-8 pt-32">
       <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-black/80 backdrop-blur-md border-b border-white/5">
-        <Link to="/" className="font-bold text-xl text-white">T TheFinanceWorld</Link>
-        <Link to="/dashboard" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Dashboard</Link>
+        <Link to="/" className="font-bold text-xl text-white">T Tradexa GPT</Link>
+        {authReady && isAuthenticated ? (
+          <Link to="/dashboard" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Dashboard</Link>
+        ) : (
+          <Link to="/register" className="bg-emerald-500 text-white px-4 py-2 rounded-full font-medium">Get started</Link>
+        )}
       </nav>
       <div className="max-w-4xl mx-auto bg-neutral-900/50 p-12 rounded-3xl border border-white/10">
         <h1 className="text-5xl font-bold text-white mb-12">About The Company</h1>

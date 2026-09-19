@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-300 p-8 pt-32">
       <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-neutral-950/80 backdrop-blur-md border-b border-white/5">
-        <Link to="/" className="font-bold text-xl text-white">T TheFinanceWorld</Link>
+        <Link to="/" className="font-bold text-xl text-white">T Tradexa GPT</Link>
       </nav>
       <div className="max-w-3xl mx-auto bg-neutral-900/50 p-8 rounded-3xl border border-white/10">
         <h1 className="text-4xl font-bold text-white mb-8">Privacy Policy</h1>

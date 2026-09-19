@@ -2,8 +2,12 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from 'recharts'
+import { Crown } from 'lucide-react'
 import { getSummary } from '../api/analytics'
 import { getTrades } from '../api/trades'
+import { apiErrorMessage } from '../api/client'
+import { cancelSubscription } from '../api/billing'
+import { usePlan } from '../context/PlanContext'
 import EmptyState from '../components/EmptyState'
 import KpiCard from '../components/KpiCard'
 import { formatDate, formatMoney, formatNumber, formatPercent, pnlClass } from '../utils/format'
@@ -42,6 +46,110 @@ function confidenceFrom(summary) {
   const skew = Number(summary.skewness || 0)
   const score = Math.max(4, Math.min(96, win * 0.7 + (expectancy > 0 ? 18 : 4) + Math.max(-8, Math.min(8, skew))))
   return score
+}
+
+function formatRenewalDate(iso) {
+  if (!iso) return '—'
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return '—'
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function SubscriptionCard() {
+  const { plan, subscription, trialActive, trialEndsAt, loading, refresh } = usePlan()
+  const [confirming, setConfirming] = useState(false)
+  const [working, setWorking] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  async function handleCancel() {
+    setError('')
+    setWorking(true)
+    try {
+      await cancelSubscription()
+      await refresh()
+      setConfirming(false)
+      setMessage('Your Pro subscription will stay active until the renewal date, then end. No further charges.')
+    } catch (err) {
+      setError(apiErrorMessage(err))
+    } finally {
+      setWorking(false)
+    }
+  }
+
+  const isPro = plan === 'PRO'
+  const cancelAtEnd = Boolean(subscription?.cancelAtPeriodEnd)
+
+  return (
+    <section className="card" style={{ width: 'min(1240px, calc(100% - 32px))', margin: '0 auto 16px' }}>
+      <div className="card-title">
+        <h3 className="flex items-center gap-2">
+          {isPro ? <Crown className="w-4 h-4 text-indigo-400" /> : null}
+          Subscription
+        </h3>
+        {loading ? (
+          <span className="neutral">Loading…</span>
+        ) : isPro ? (
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 rounded-full px-3 py-1">
+            Tradexa Pro
+          </span>
+        ) : (
+          <Link to="/pricing" className="text-sm font-semibold text-indigo-400 hover:text-indigo-300">
+            Upgrade to Pro
+          </Link>
+        )}
+      </div>
+
+      {message ? <div className="alert" style={{ marginBottom: 12 }}>{message}</div> : null}
+      {error ? <div className="alert" style={{ marginBottom: 12 }}>{error}</div> : null}
+
+      {isPro ? (
+        <div className="stack" style={{ gap: 12 }}>
+          <p className="neutral" style={{ margin: 0 }}>
+            {cancelAtEnd ? 'Ends on' : 'Renews on'}{' '}
+            <strong className="text-white">{formatRenewalDate(subscription?.currentEnd)}</strong>
+            {cancelAtEnd ? ' — no further charges.' : '.'}
+          </p>
+          {confirming ? (
+            <div className="flex flex-wrap gap-3 items-center">
+              <span className="text-sm text-neutral-300">Cancel at the end of the billing period?</span>
+              <button
+                type="button"
+                className="ghost-btn"
+                disabled={working}
+                onClick={() => setConfirming(false)}
+              >
+                Keep Pro
+              </button>
+              <button
+                type="button"
+                className="primary-btn"
+                style={{ background: '#ef4444' }}
+                disabled={working}
+                onClick={handleCancel}
+              >
+                {working ? 'Cancelling…' : 'Confirm cancel'}
+              </button>
+            </div>
+          ) : cancelAtEnd ? null : (
+            <div>
+              <button type="button" className="ghost-btn" onClick={() => setConfirming(true)}>
+                Cancel subscription
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="neutral" style={{ margin: 0 }}>
+          You're on the <strong className="text-white">Free</strong> plan.
+          {trialActive && trialEndsAt
+            ? ` Your 3-day journal trial is active until ${formatRenewalDate(trialEndsAt)}.`
+            : ''}
+          {' '}<Link to="/pricing" className="text-indigo-400 hover:text-indigo-300 font-semibold">See Pro plans</Link>
+        </p>
+      )}
+    </section>
+  )
 }
 
 export default function Dashboard() {
@@ -83,6 +191,8 @@ export default function Dashboard() {
       </div>
 
       {error ? <div className="alert" style={{ width: 'min(1240px, calc(100% - 32px))', margin: '0 auto 16px' }}>{error}</div> : null}
+
+      <SubscriptionCard />
 
       <section className="kpi-grid">
         <KpiCard label="HIGHEST P&L" value={formatMoney(summary?.totalPnl)} hint="Net across your journal" tone="green" icon="â‚¹" />
