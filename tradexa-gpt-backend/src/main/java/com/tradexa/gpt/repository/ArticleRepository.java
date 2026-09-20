@@ -22,6 +22,14 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findByStatusAndTagsContainingIgnoreCaseOrderByPublishedAtDesc(
             ArticleStatus status, String tag, Pageable pageable);
 
+    Page<Article> findByStatusAndCategoryOrderByPublishedAtDesc(
+            ArticleStatus status, String category, Pageable pageable);
+
+    Page<Article> findByStatusAndCategoryAndTagsContainingIgnoreCaseOrderByPublishedAtDesc(
+            ArticleStatus status, String category, String tag, Pageable pageable);
+
+    List<Article> findByStatusOrderByViewCountDesc(ArticleStatus status, Pageable pageable);
+
     List<Article> findByStatusOrderByPublishedAtDesc(ArticleStatus status);
 
     boolean existsBySlug(String slug);

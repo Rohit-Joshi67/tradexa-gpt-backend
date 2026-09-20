@@ -41,6 +41,14 @@ public class Article {
     @Column(name = "published_at")
     private Instant publishedAt;
 
+    /** Locked category: TRADING | INVESTING | BUSINESS_CASE_STUDIES | PERSONAL_FINANCE. Stored uppercase. */
+    @Column(length = 40)
+    private String category;
+
+    /** Lifetime pageviews; powers the "most read" strip. */
+    @Column(name = "view_count", nullable = false)
+    private long viewCount = 0;
+
     @Column(name = "meta_title", length = 220)
     private String metaTitle;
 
@@ -85,6 +93,12 @@ public class Article {
 
     public Instant getPublishedAt() { return publishedAt; }
     public void setPublishedAt(Instant publishedAt) { this.publishedAt = publishedAt; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public long getViewCount() { return viewCount; }
+    public void setViewCount(long viewCount) { this.viewCount = viewCount; }
 
     public String getMetaTitle() { return metaTitle; }
     public void setMetaTitle(String metaTitle) { this.metaTitle = metaTitle; }

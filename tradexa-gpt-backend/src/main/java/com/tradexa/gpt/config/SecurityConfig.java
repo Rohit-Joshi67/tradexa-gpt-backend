@@ -73,6 +73,11 @@ public class SecurityConfig {
                             HttpMethod.GET,
                             "/api/v1/articles/**"
                     ).permitAll();
+                    // View counting is also public — the reader page calls it on every load.
+                    auth.requestMatchers(
+                            HttpMethod.POST,
+                            "/api/v1/articles/*/view"
+                    ).permitAll();
                     if (swaggerEnabled) {
                         auth.requestMatchers(
                                 "/swagger-ui/**",

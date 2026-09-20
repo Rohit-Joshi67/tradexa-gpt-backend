@@ -38,6 +38,10 @@ public class ArticleRequest {
     /** DRAFT | PUBLISHED — defaults to DRAFT. */
     private String status;
 
+    /** TRADING | INVESTING | BUSINESS_CASE_STUDIES | PERSONAL_FINANCE (case-insensitive, stored uppercase). */
+    @Size(max = 40, message = "Category must be at most 40 characters.")
+    private String category;
+
     public ArticleRequest() {
     }
 
@@ -70,4 +74,7 @@ public class ArticleRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

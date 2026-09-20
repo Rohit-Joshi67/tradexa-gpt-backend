@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
+import { ArrowRight, Lock, AlertTriangle } from 'lucide-react'
 import { apiErrorMessage } from '../api/client'
 import { resetPassword } from '../api/auth'
+import AuthLayout from '../components/ui/AuthLayout'
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams()
@@ -27,44 +29,56 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <div className="auth-screen">
-        <div className="auth-card stack">
-          <h1>Invalid reset link.</h1>
-          <p className="neutral">This password reset link is missing or malformed.</p>
-          <p>
-            <Link to="/forgot-password">Request a new one</Link>
-          </p>
+      <AuthLayout
+        title="Invalid reset link."
+        subtitle="This password reset link is missing or malformed."
+        footer={
+          <Link to="/forgot-password" className="text-[var(--color-profit)] font-semibold hover:underline">
+            Request a new one
+          </Link>
+        }
+      >
+        <div className="alert alert-error !flex !gap-3 items-start">
+          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+          <span>No reset token found in the URL.</span>
         </div>
-      </div>
+      </AuthLayout>
     )
   }
 
   return (
-    <div className="auth-screen">
-      <form className="auth-card stack" onSubmit={onSubmit}>
-        <div className="brand">
-          <span className="brand-mark">T</span>
-          Tradexa GPT
+    <AuthLayout
+      title="Choose a new password."
+      subtitle="Min 10 characters, with at least one letter and one number."
+      footer={
+        <Link to="/login" className="text-[var(--color-profit)] font-semibold hover:underline">
+          Back to sign in
+        </Link>
+      }
+    >
+      <form onSubmit={onSubmit} className="space-y-4">
+        {error && <div className="alert alert-error">{error}</div>}
+        <div>
+          <label className="label" htmlFor="rp-password">New password</label>
+          <div className="relative">
+            <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-faint)]" />
+            <input
+              id="rp-password"
+              type="password"
+              required
+              minLength={10}
+              autoComplete="new-password"
+              placeholder="New password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field !pl-11"
+            />
+          </div>
         </div>
-        <h1>Choose a new password.</h1>
-        <p className="neutral">Min 10 characters, with at least one letter and one number.</p>
-        {error ? <div className="alert">{error}</div> : null}
-        <input
-          type="password"
-          required
-          minLength={10}
-          autoComplete="new-password"
-          placeholder="New password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="primary-btn" disabled={loading} type="submit">
-          {loading ? 'Updating…' : 'Update password'}
+        <button className="btn btn-profit btn-lg w-full" disabled={loading} type="submit">
+          {loading ? 'Updating…' : <>Update password <ArrowRight size={17} /></>}
         </button>
-        <p>
-          <Link to="/login">Back to sign in</Link>
-        </p>
       </form>
-    </div>
+    </AuthLayout>
   )
 }

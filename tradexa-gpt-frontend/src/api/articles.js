@@ -4,12 +4,31 @@ import api, { unwrap } from './client'
 // `unwrap` resolves to the inner `data` object.
 
 // Public (free, ad-supported) read API — no login required.
-export function listArticles({ page = 0, size = 9, tag } = {}) {
-  return unwrap(api.get('/api/v1/articles', { params: { page, size, tag } }))
+export function listArticles({ page = 0, size = 9, tag, category } = {}) {
+  const params = { page, size }
+  if (tag) params.tag = tag
+  if (category) params.category = category
+  return unwrap(api.get('/api/v1/articles', { params }))
+}
+
+/** Top `limit` published articles ordered by viewCount desc. */
+export function getTopArticles(limit = 5) {
+  return unwrap(api.get('/api/v1/articles/top', { params: { limit } }))
 }
 
 export function getArticle(slug) {
   return unwrap(api.get(`/api/v1/articles/${encodeURIComponent(slug)}`))
+}
+
+/**
+ * Record one view for an article. Public, no auth. Fire-and-forget:
+ * never throws and never blocks rendering — callers don't await this.
+ */
+export function recordArticleView(slug) {
+  if (!slug) return Promise.resolve()
+  return unwrap(api.post(`/api/v1/articles/${encodeURIComponent(slug)}/view`)).catch(() => {
+    // view counting is best-effort; a failed beacon must not break the page
+  })
 }
 
 // Admin CMS API — requires ROLE_ADMIN (enforced server-side).

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Loader2, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { apiErrorMessage } from '../api/client'
 import { verifyEmail } from '../api/auth'
+import AuthLayout from '../components/ui/AuthLayout'
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams()
@@ -32,37 +34,38 @@ export default function VerifyEmail() {
   }, [token])
 
   return (
-    <div className="auth-screen">
-      <div className="auth-card stack">
-        <div className="brand">
-          <span className="brand-mark">T</span>
-          Tradexa GPT
+    <AuthLayout
+      title={state === 'verifying' ? 'Verifying your email…' : state === 'success' ? 'Email verified.' : 'Verification failed.'}
+      subtitle={state === 'verifying' ? 'One moment while we confirm your address.' : state === 'success' ? 'Your account is ready to trade with a clear ledger.' : 'Something went wrong with this link.'}
+    >
+      {state === 'verifying' && (
+        <div className="flex items-center gap-3 text-[var(--color-muted)]">
+          <Loader2 size={20} className="animate-spin text-[var(--color-profit)]" />
+          <span className="text-[14px]">Confirming your email address…</span>
         </div>
-        {state === 'verifying' && (
-          <>
-            <h1>Verifying your email…</h1>
-            <p className="neutral">One moment.</p>
-          </>
-        )}
-        {state === 'success' && (
-          <>
-            <h1>Email verified.</h1>
-            <p className="neutral">Your account is ready.</p>
-            <p>
-              <Link to="/login">Sign in</Link>
-            </p>
-          </>
-        )}
-        {state === 'error' && (
-          <>
-            <h1>Verification failed.</h1>
-            <div className="alert">{error}</div>
-            <p>
-              <Link to="/login">Back to sign in</Link>
-            </p>
-          </>
-        )}
-      </div>
-    </div>
+      )}
+      {state === 'success' && (
+        <div className="space-y-4">
+          <div className="alert alert-ok !flex !gap-3 items-start">
+            <CheckCircle2 size={18} className="shrink-0 mt-0.5" />
+            <span>Your email is verified. You can sign in now.</span>
+          </div>
+          <Link to="/login" className="btn btn-profit btn-lg w-full">
+            Sign in
+          </Link>
+        </div>
+      )}
+      {state === 'error' && (
+        <div className="space-y-4">
+          <div className="alert alert-error !flex !gap-3 items-start">
+            <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+          <Link to="/login" className="btn btn-line w-full">
+            Back to sign in
+          </Link>
+        </div>
+      )}
+    </AuthLayout>
   )
 }

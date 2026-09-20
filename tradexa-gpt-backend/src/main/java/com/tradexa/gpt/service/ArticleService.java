@@ -19,12 +19,20 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
 
     private static final int WORDS_PER_MINUTE = 200;
+
+    /**
+     * Locked article categories. Stored uppercase in the DB; accepted
+     * case-insensitively from requests and query params.
+     */
+    private static final java.util.Set<String> VALID_CATEGORIES = Set.of(
+            "TRADING", "INVESTING", "BUSINESS_CASE_STUDIES", "PERSONAL_FINANCE");
 
     private final ArticleRepository articleRepository;
 
@@ -37,12 +45,23 @@ public class ArticleService {
     // ------------------------------------------------------------------
 
     @Transactional(readOnly = true)
-    public PagedResponse<ArticleSummaryDTO> listPublished(int page, int size, String tag) {
+    public PagedResponse<ArticleSummaryDTO> listPublished(int page, int size, String tag, String category) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), clampSize(size));
-        Page<Article> result = (tag == null || tag.isBlank())
-                ? articleRepository.findByStatusOrderByPublishedAtDesc(ArticleStatus.PUBLISHED, pageable)
-                : articleRepository.findByStatusAndTagsContainingIgnoreCaseOrderByPublishedAtDesc(
-                        ArticleStatus.PUBLISHED, tag.trim(), pageable);
+        String normalizedCategory = normalizeCategoryFilter(category);
+        boolean hasTag = tag != null && !tag.isBlank();
+        Page<Article> result;
+        if (normalizedCategory == null) {
+            result = hasTag
+                    ? articleRepository.findByStatusAndTagsContainingIgnoreCaseOrderByPublishedAtDesc(
+                            ArticleStatus.PUBLISHED, tag.trim(), pageable)
+                    : articleRepository.findByStatusOrderByPublishedAtDesc(ArticleStatus.PUBLISHED, pageable);
+        } else if (hasTag) {
+            result = articleRepository.findByStatusAndCategoryAndTagsContainingIgnoreCaseOrderByPublishedAtDesc(
+                    ArticleStatus.PUBLISHED, normalizedCategory, tag.trim(), pageable);
+        } else {
+            result = articleRepository.findByStatusAndCategoryOrderByPublishedAtDesc(
+                    ArticleStatus.PUBLISHED, normalizedCategory, pageable);
+        }
         return toPaged(result.map(this::toSummary));
     }
 
@@ -57,6 +76,24 @@ public class ArticleService {
     public List<ArticleSummaryDTO> listPublishedForSitemap() {
         return articleRepository.findByStatusOrderByPublishedAtDesc(ArticleStatus.PUBLISHED)
                 .stream().map(this::toSummary).collect(Collectors.toList());
+    }
+
+    /** Most-read published articles, ordered by view count desc. Used by the blog "most read" strip. */
+    @Transactional(readOnly = true)
+    public List<ArticleSummaryDTO> topViewed(int limit) {
+        int clamped = Math.min(Math.max(limit, 1), 10);
+        return articleRepository.findByStatusOrderByViewCountDesc(
+                        ArticleStatus.PUBLISHED, PageRequest.of(0, clamped))
+                .stream().map(this::toSummary).collect(Collectors.toList());
+    }
+
+    /** Increments the view counter of a published article. Public (no auth) — called by the reader page. */
+    @Transactional
+    public void incrementViews(String slug) {
+        Article article = articleRepository.findBySlugAndStatus(slug, ArticleStatus.PUBLISHED)
+                .orElseThrow(() -> new ArticleNotFoundException(slug));
+        article.setViewCount(article.getViewCount() + 1);
+        articleRepository.save(article);
     }
 
     // ------------------------------------------------------------------
@@ -126,6 +163,7 @@ public class ArticleService {
         article.setExcerpt(blankToNull(request.getExcerpt()));
         article.setContent(request.getContent());
         article.setAuthor(blankToNull(request.getAuthor()));
+        article.setCategory(parseCategory(request.getCategory()));
         article.setTags(normalizeTags(request.getTags()));
         article.setMetaTitle(blankToNull(request.getMetaTitle()));
         article.setMetaDescription(blankToNull(request.getMetaDescription()));
@@ -157,6 +195,38 @@ public class ArticleService {
         }
     }
 
+    /**
+     * Validates a category from an admin request: case-insensitive accept,
+     * stored uppercase. Blank means "uncategorized" and is allowed.
+     */
+    static String parseCategory(String category) {
+        if (category == null || category.isBlank()) {
+            return null;
+        }
+        String normalized = category.trim().toUpperCase(Locale.ROOT);
+        if (!VALID_CATEGORIES.contains(normalized)) {
+            throw new IllegalArgumentException(
+                    "Category must be one of TRADING, INVESTING, BUSINESS_CASE_STUDIES, PERSONAL_FINANCE.");
+        }
+        return normalized;
+    }
+
+    /**
+     * Validates a category query-param filter. Blank or "all" means no
+     * filter (returns null); unknown values fall back to no filter so the
+     * public list endpoint never 400s on a bad category param.
+     */
+    static String normalizeCategoryFilter(String category) {
+        if (category == null || category.isBlank() || category.trim().equalsIgnoreCase("all")) {
+            return null;
+        }
+        try {
+            return parseCategory(category);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     private ArticleSummaryDTO toSummary(Article article) {
         ArticleSummaryDTO dto = new ArticleSummaryDTO();
         dto.setId(article.getId());
@@ -167,6 +237,8 @@ public class ArticleService {
         dto.setTags(parseTags(article.getTags()));
         dto.setPublishedAt(article.getPublishedAt());
         dto.setReadingMinutes(readingMinutes(article.getContent()));
+        dto.setCategory(article.getCategory());
+        dto.setViewCount(article.getViewCount());
         return dto;
     }
 
@@ -185,6 +257,8 @@ public class ArticleService {
         dto.setMetaDescription(article.getMetaDescription());
         dto.setOgImage(article.getOgImage());
         dto.setStatus(article.getStatus().name());
+        dto.setCategory(article.getCategory());
+        dto.setViewCount(article.getViewCount());
         return dto;
     }
 

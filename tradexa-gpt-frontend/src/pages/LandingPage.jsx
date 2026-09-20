@@ -1,340 +1,474 @@
-﻿import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import HorizontalDisclaimer from '../components/HorizontalDisclaimer';
-import { useAuth } from '../context/AuthContext';
-import { usePlan } from '../context/PlanContext';
-import { ArrowRight, BarChart3, BrainCircuit, ShieldAlert, LineChart, ChevronRight, Activity, BookOpen, Brain, Terminal, ChevronDown, IndianRupee, TrendingUp, TrendingDown, PieChart } from 'lucide-react';
+import { Link } from 'react-router-dom'
+import {
+  ArrowRight, BarChart3, BrainCircuit, ShieldAlert, BookOpen, Check,
+  UploadCloud, ScanSearch, Target, MessageSquareText, Lock, Zap,
+} from 'lucide-react'
+import SiteNav from '../components/ui/SiteNav'
+import SiteFooter from '../components/ui/SiteFooter'
+import TickerTape from '../components/ui/TickerTape'
+import Candles from '../components/ui/Candles'
+import Reveal from '../components/ui/Reveal'
+import SectionHead from '../components/ui/SectionHead'
+import FaqAccordion from '../components/ui/FaqAccordion'
+import HorizontalDisclaimer from '../components/HorizontalDisclaimer'
+import { useAuth } from '../context/AuthContext'
 
-const Navbar = () => {
-  const { plan } = usePlan();
-  const { isAuthenticated, authReady } = useAuth();
+function TerminalMock() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-neutral-950/50 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white tracking-tight">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-sm">T</div>
-          Tradexa GPT
-        </Link>
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-400">
-          <Link to="/tradexa-gpt" className="hover:text-white transition-colors">Tradexa-GPT</Link>
-          <Link to="/blogs" className="hover:text-white transition-colors">Finance Blogs</Link>
-          <Link to="/tools/edge-validator" className="hover:text-white transition-colors">Edge Validator</Link>
-          <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-          <Link to="/vision" className="hover:text-white transition-colors">Our Vision</Link>
+    <div className="panel overflow-hidden shadow-[0_40px_90px_rgba(0,0,0,.55)]">
+      <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[var(--color-line)]">
+        <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+        <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+        <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+        <span className="ml-3 font-mono text-[12px] text-[var(--color-faint)]">tradexa — journal overview</span>
+        <span className="ml-auto badge badge-profit !text-[10px]"><span className="dot live" /> Live</span>
+      </div>
+      <div className="p-5 md:p-6">
+        <div className="flex items-end justify-between mb-4">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--color-faint)] mb-1">Net P&amp;L</p>
+            <p className="stat-num tnum text-[34px] md:text-[40px] text-[var(--color-profit)]">₹4,29,290</p>
+          </div>
+          <span className="badge badge-profit tnum">+12.4% this week</span>
         </div>
-        <div className="flex items-center gap-4">
-          {plan === 'PRO' && (
-            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/15 border border-indigo-500/30 rounded-full px-2.5 py-1">
-              Pro
-            </span>
-          )}
-          {!authReady ? null : isAuthenticated ? (
-            <Link to="/dashboard" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" className="text-sm font-medium text-white hover:text-indigo-400 transition-colors">Log in</Link>
-              <Link to="/register" className="text-sm font-medium bg-emerald-500 text-white px-4 py-2 rounded-full hover:bg-emerald-600 transition-colors">
-                Get started
-              </Link>
-            </>
-          )}
+        <div className="rounded-xl border border-[var(--color-line)] bg-[#080b0d] overflow-hidden">
+          <Candles className="w-full h-[190px] md:h-[220px] block" seed={11} />
+        </div>
+        <div className="grid grid-cols-3 gap-3 mt-4">
+          {[
+            { l: 'Win rate', v: '68.4%', c: 'text-[var(--color-ink)]' },
+            { l: 'Profit factor', v: '2.31', c: 'text-[var(--color-ink)]' },
+            { l: 'Max drawdown', v: '-2.1%', c: 'text-[var(--color-loss)]' },
+          ].map((s) => (
+            <div key={s.l} className="rounded-xl border border-[var(--color-line)] bg-[rgba(255,255,255,.015)] px-4 py-3">
+              <p className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-[var(--color-faint)]">{s.l}</p>
+              <p className={`stat-num tnum text-[20px] md:text-[24px] mt-1 ${s.c}`}>{s.v}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </nav>
-  );
-};
+    </div>
+  )
+}
+
+const LEAKS = [
+  {
+    icon: Target,
+    title: 'Revenge trading',
+    body: 'One red day spirals into five. Your journal shows the pattern — Tradexa flags it before the next spiral starts.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Oversized positions',
+    body: 'Risking 5% "just this once" is how accounts die. Position sizing is computed for you, every single trade.',
+  },
+  {
+    icon: ShieldAlert,
+    title: 'No verifiable edge',
+    body: 'A strategy isn\'t an edge until the math says so. Monte Carlo tells you the truth your gut won\'t.',
+  },
+]
+
+const FAQS = [
+  {
+    q: 'Is Tradexa GPT a trading advisor?',
+    a: 'No. Tradexa GPT is an analytics and journaling platform with an AI copilot. It helps you measure your own trading, find patterns in your behavior, and manage risk — it never tells you what to buy or sell.',
+  },
+  {
+    q: 'How does the free trial work?',
+    a: 'Every new account gets a 3-day free trial of the full trade journal and analytics. No credit card required. The AI copilot is a Pro-only feature.',
+  },
+  {
+    q: 'Which brokers are supported for import?',
+    a: 'You can upload trade files from Zerodha and Dhan today, with more brokers on the roadmap. CSV imports work for everything else.',
+  },
+  {
+    q: 'What does the AI copilot actually do?',
+    a: 'It reads your journal like a quant coach: it finds your edge leaks (e.g. "you lose money on Fridays after 2pm"), runs pre-trade risk checks, and answers questions about your own data.',
+  },
+  {
+    q: 'Can I cancel anytime?',
+    a: 'Yes. Cancel in one click from your dashboard. You keep Pro until the end of your billing period — no retention calls, no dark patterns.',
+  },
+]
 
 export default function LandingPage() {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const { isAuthenticated } = useAuth()
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-neutral-50 bg-[url('data:image/svg+xml,%3Csvg width=\&quot;60\&quot; height=\&quot;60\&quot; viewBox=\&quot;0 0 60 60\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;%3E%3Cg fill=\&quot;none\&quot; fill-rule=\&quot;evenodd\&quot;%3E%3Cg fill=\&quot;%23ffffff\&quot; fill-opacity=\&quot;0.03\&quot;%3E%3Cpath d=\&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] font-sans selection:bg-indigo-500/30 overflow-hidden">
-      <Navbar />
+    <div className="min-h-screen bg-[var(--color-abyss)] text-[var(--color-ink)] overflow-x-clip">
+      <SiteNav />
 
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 px-6 max-w-7xl mx-auto min-h-screen grid lg:grid-cols-[1fr_1.05fr] gap-16 items-center">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 rounded-full blur-[120px] opacity-50"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[100px] opacity-30"></div>
+      {/* ================= HERO ================= */}
+      <section className="relative">
+        <div className="absolute inset-0 bg-grid [mask-image:radial-gradient(ellipse_75%_65%_at_50%_35%,#000_25%,transparent_78%)]" />
+        <div className="bg-glow w-[720px] h-[480px] bg-[rgba(14,203,129,.08)] top-[-140px] left-1/2 -translate-x-1/2" />
+        <div className="bg-glow w-[420px] h-[420px] bg-[rgba(76,141,255,.06)] top-[30%] right-[-120px]" />
+
+        <div className="wrap relative pt-[calc(68px+clamp(3.5rem,8vw,6.5rem))] pb-16 md:pb-24 grid lg:grid-cols-[1.02fr_.98fr] gap-14 lg:gap-10 items-center">
+          <div>
+            <Reveal>
+              <span className="badge badge-profit mb-6"><span className="dot live" /> The quant copilot for traders</span>
+              <h1 className="display-1 mt-5">
+                Turn your trades<br />into <span className="grad-text">an edge.</span>
+              </h1>
+              <p className="lede mt-6 max-w-xl">
+                Tradexa GPT journals every trade, quantifies your behavior, and puts an AI coach on your
+                data — so you stop donating money to the market and start trading like a professional.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3.5 mt-9">
+                <Link to={isAuthenticated ? '/dashboard' : '/register'} className="btn btn-profit btn-lg">
+                  {isAuthenticated ? 'Open your dashboard' : 'Start free trial'} <ArrowRight size={18} />
+                </Link>
+                <Link to="/tradexa-gpt" className="btn btn-ghost btn-lg">
+                  Meet Tradexa-GPT
+                </Link>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-7 text-[13.5px] text-[var(--color-muted)]">
+                {['3-day free journal trial', 'No credit card required', 'Zerodha & Dhan import'].map((t) => (
+                  <span key={t} className="inline-flex items-center gap-2">
+                    <Check size={15} className="text-[var(--color-profit)]" /> {t}
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={140} scale className="relative">
+            <div className="float-slow">
+              <TerminalMock />
+            </div>
+            <div className="hidden md:flex absolute -left-8 -bottom-8 card !p-4 items-center gap-3 shadow-[0_24px_60px_rgba(0,0,0,.5)]">
+              <span className="grid place-items-center w-10 h-10 rounded-xl bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.3)]">
+                <BrainCircuit size={19} className="text-[var(--color-profit)]" />
+              </span>
+              <div>
+                <p className="text-[12.5px] font-semibold">Copilot insight</p>
+                <p className="text-[12px] text-[var(--color-muted)]">“Friday overtrading cost you ₹18,400.”</p>
+              </div>
+            </div>
+          </Reveal>
         </div>
+      </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl"
-        >
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1.1] mb-8">
-            Trade Smarter.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">Manage Risk Better.</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-neutral-400 leading-relaxed mb-10 max-w-2xl">
-            The intelligence layer for disciplined traders. Powerful AI-driven tools, risk management calculators, and financial insights to help you make informed decisions.
+      <TickerTape />
+
+      {/* ================= STATS ================= */}
+      <section className="sec !py-14">
+        <div className="wrap grid grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--color-line)] rounded-2xl overflow-hidden border border-[var(--color-line)]">
+          {[
+            { v: '40+', l: 'Journal analytics' },
+            { v: '10k', l: 'Monte Carlo paths' },
+            { v: '3-day', l: 'Free journal trial' },
+            { v: '₹999', l: '/mo launch pricing' },
+          ].map((s, i) => (
+            <Reveal key={s.l} delay={i * 70} className="bg-[var(--color-panel)] px-6 py-8 text-center">
+              <p className="stat-num tnum text-[30px] md:text-[36px] text-[var(--color-ink)]">{s.v}</p>
+              <p className="text-[13px] text-[var(--color-muted)] mt-1.5 font-medium">{s.l}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= PROBLEM ================= */}
+      <section className="sec">
+        <div className="wrap">
+          <SectionHead
+            kicker="The real problem"
+            title={<>The market doesn't take your money.<br /><span className="text-[var(--color-loss)]">Your behavior does.</span></>}
+            lede="Ninety percent of traders lose because of repeatable, measurable mistakes — not bad luck. Tradexa makes those mistakes visible, then helps you kill them."
+          />
+          <div className="grid md:grid-cols-3 gap-5">
+            {LEAKS.map((c, i) => (
+              <Reveal key={c.title} delay={i * 90}>
+                <div className="card card-hover h-full">
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[var(--color-loss-dim)] border border-[rgba(246,70,93,.28)] mb-5">
+                    <c.icon size={22} className="text-[var(--color-loss)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[19px] tracking-tight mb-2.5">{c.title}</h3>
+                  <p className="text-[14.5px] text-[var(--color-muted)] leading-relaxed">{c.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TOOLS BENTO ================= */}
+      <section className="sec !pt-0">
+        <div className="wrap">
+          <SectionHead
+            kicker="The toolkit"
+            title="Everything you need to trade with discipline."
+            lede="One workspace: your journal, your edge math, your AI coach, and the education to use them well."
+          />
+          <div className="grid md:grid-cols-3 gap-5">
+            <Reveal className="md:col-span-2">
+              <Link to="/tradexa-gpt" className="card card-hover h-full flex flex-col justify-between overflow-hidden group min-h-[320px]">
+                <div className="bg-glow w-[380px] h-[280px] bg-[rgba(14,203,129,.09)] -top-24 -right-24" />
+                <div className="relative">
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.3)] mb-5">
+                    <BrainCircuit size={22} className="text-[var(--color-profit)]" />
+                  </span>
+                  <div className="flex items-center gap-3 mb-2.5">
+                    <h3 className="font-display font-semibold text-[22px] tracking-tight">Tradexa-GPT Copilot</h3>
+                    <span className="badge badge-gold">Pro</span>
+                  </div>
+                  <p className="text-[var(--color-muted)] text-[15px] leading-relaxed max-w-md">
+                    An AI quant coach trained on <em className="not-italic text-[var(--color-ink)]">your</em> journal.
+                    Ask anything, get pre-trade risk checks, and receive leak reports that read your behavior like a book.
+                  </p>
+                </div>
+                <span className="relative inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-profit)] mt-6">
+                  Explore the copilot <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </Reveal>
+            <Reveal delay={90}>
+              <Link to="/tools/edge-validator" className="card card-hover h-full flex flex-col justify-between min-h-[320px] group">
+                <div>
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[var(--color-info-dim)] border border-[rgba(76,141,255,.3)] mb-5">
+                    <ShieldAlert size={22} className="text-[var(--color-info)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[22px] tracking-tight mb-2.5">Edge Validator</h3>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed">
+                    Win rate, risk of ruin, expectancy and 10,000-path Monte Carlo — free, no signup.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-ink)] mt-6">
+                  Validate your edge <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </Reveal>
+            <Reveal>
+              <Link to="/dashboard" className="card card-hover h-full flex flex-col justify-between min-h-[260px] group">
+                <div>
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[rgba(240,185,11,.1)] border border-[rgba(240,185,11,.3)] mb-5">
+                    <UploadCloud size={22} className="text-[var(--color-gold)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[20px] tracking-tight mb-2.5">Trade Journal</h3>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed">
+                    Import from Zerodha &amp; Dhan in seconds. Forty-plus analytics on every trade you've ever taken.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-ink)] mt-6">
+                  Open the journal <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </Reveal>
+            <Reveal delay={90}>
+              <Link to="/blogs" className="card card-hover h-full flex flex-col justify-between min-h-[260px] group">
+                <div>
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[rgba(255,255,255,.05)] border border-[var(--color-line2)] mb-5">
+                    <BookOpen size={22} className="text-[var(--color-ink)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[20px] tracking-tight mb-2.5">Finance Intelligence</h3>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed">
+                    Free, ad-supported deep dives on markets, psychology and risk. No paywall on knowledge.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-ink)] mt-6">
+                  Read the blog <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </Reveal>
+            <Reveal delay={180}>
+              <div className="card h-full flex flex-col justify-between min-h-[260px] !border-[rgba(14,203,129,.25)] bg-[linear-gradient(180deg,rgba(14,203,129,.06),var(--color-panel))]">
+                <div>
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.3)] mb-5">
+                    <ScanSearch size={22} className="text-[var(--color-profit)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[20px] tracking-tight mb-2.5">Leak Reports</h3>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed">
+                    Weekly AI reports that name your costliest habits — in rupees, not platitudes.
+                  </p>
+                </div>
+                <Link to="/pricing" className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-profit)] mt-6">
+                  See Pro plans <ArrowRight size={16} />
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= HOW IT WORKS ================= */}
+      <section className="sec border-y border-[var(--color-line)] bg-[rgba(255,255,255,.012)]">
+        <div className="wrap">
+          <SectionHead
+            kicker="How it works"
+            title="From chaos to quantified in three steps."
+          />
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { n: '01', icon: UploadCloud, t: 'Connect your journal', d: 'Upload your Zerodha or Dhan trade file. Tradexa parses every trade in seconds — no manual entry.' },
+              { n: '02', icon: ScanSearch, t: 'Find your leaks', d: 'Analytics and the AI copilot surface the exact behaviors costing you money, ranked by rupees lost.' },
+              { n: '03', icon: Target, t: 'Trade the plan', d: 'Pre-trade risk checks and position sizing keep every entry inside the rules you set for yourself.' },
+            ].map((s, i) => (
+              <Reveal key={s.n} delay={i * 90}>
+                <div className="relative panel p-7 h-full">
+                  <span className="font-display font-bold text-[44px] leading-none text-[rgba(255,255,255,.06)] absolute top-5 right-6 select-none">{s.n}</span>
+                  <span className="grid place-items-center w-11 h-11 rounded-xl bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.3)] mb-5">
+                    <s.icon size={20} className="text-[var(--color-profit)]" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[18px] tracking-tight mb-2">{s.t}</h3>
+                  <p className="text-[14.5px] text-[var(--color-muted)] leading-relaxed">{s.d}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= COPILOT PREVIEW ================= */}
+      <section className="sec">
+        <div className="wrap grid lg:grid-cols-2 gap-12 items-center">
+          <Reveal>
+            <span className="kicker">Tradexa-GPT</span>
+            <h2 className="display-2 mt-4 mb-5">Your trading questions.<br />One intelligent interface.</h2>
+            <p className="lede mb-7">
+              Ask about position sizing, dissect a losing streak, or run a pre-trade check.
+              The copilot answers from <em className="not-italic text-[var(--color-ink)]">your</em> data — not generic textbook theory.
+            </p>
+            <ul className="space-y-3.5 mb-8">
+              {['Pre-trade risk checks in seconds', 'Leak reports that quantify bad habits', 'Journal-aware answers, not generic advice'].map((t) => (
+                <li key={t} className="flex items-start gap-3 text-[15px] text-[var(--color-muted)]">
+                  <span className="grid place-items-center w-6 h-6 rounded-full bg-[var(--color-profit-dim)] shrink-0 mt-0.5">
+                    <Check size={13} className="text-[var(--color-profit)]" />
+                  </span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/tradexa-gpt" className="btn btn-ink">Try Tradexa-GPT <ArrowRight size={16} /></Link>
+              <Link to="/pricing" className="btn btn-line">See Pro pricing</Link>
+            </div>
+          </Reveal>
+          <Reveal delay={120} scale>
+            <div className="panel overflow-hidden">
+              <div className="panel-head">
+                <div className="flex items-center gap-2.5">
+                  <span className="grid place-items-center w-8 h-8 rounded-lg bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.3)]">
+                    <MessageSquareText size={15} className="text-[var(--color-profit)]" />
+                  </span>
+                  <span className="panel-title">Tradexa-GPT</span>
+                </div>
+                <span className="badge badge-gold">Pro</span>
+              </div>
+              <div className="p-5 space-y-4 text-[14px] leading-relaxed">
+                <div className="flex justify-end">
+                  <div className="max-w-[85%] bg-[var(--color-panel3)] border border-[var(--color-line)] rounded-2xl rounded-br-md px-4 py-3">
+                    How much should I risk on a NIFTY trade with ₹1,00,000 capital and a 20-point stop?
+                  </div>
+                </div>
+                <div className="flex justify-start">
+                  <div className="max-w-[92%] bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.25)] rounded-2xl rounded-bl-md px-4 py-3">
+                    <p className="mb-2">At a 1% risk rule: <strong className="text-white tnum">₹1,000</strong> per trade.</p>
+                    <p className="text-[var(--color-muted)]">20-pt stop × 25 qty = <span className="tnum">₹500</span> risk per lot → <strong className="text-white">2 lots (50 qty)</strong> is your size. Your journal shows you usually risk 2.3% here — that's a leak.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-1">
+                  <div className="flex-1 bg-[var(--color-panel2)] border border-[var(--color-line)] rounded-xl px-4 py-3 text-[13.5px] text-[var(--color-faint)]">
+                    Ask about your trading…
+                  </div>
+                  <span className="grid place-items-center w-11 h-11 rounded-xl bg-[var(--color-profit)] shrink-0">
+                    <ArrowRight size={17} className="text-[#04120c]" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ================= PRICING TEASER ================= */}
+      <section className="sec !pt-0">
+        <div className="wrap">
+          <div className="panel overflow-hidden">
+            <div className="grid lg:grid-cols-2">
+              <div className="p-8 md:p-12">
+                <Reveal>
+                  <span className="kicker gold">Pricing</span>
+                  <h2 className="h-sec mt-4 mb-4">Free to learn.<br />Pro to earn.</h2>
+                  <p className="text-[var(--color-muted)] text-[15px] leading-relaxed mb-7 max-w-md">
+                    Blogs are free forever. The journal trial is free for 3 days.
+                    Pro unlocks the full journal, analytics and the AI copilot — at a launch price locked for our first 100 traders.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Link to="/pricing" className="btn btn-gold">See plans <ArrowRight size={16} /></Link>
+                    <Link to="/register" className="btn btn-line">Start free</Link>
+                  </div>
+                </Reveal>
+              </div>
+              <div className="border-t lg:border-t-0 lg:border-l border-[var(--color-line)] bg-[rgba(240,185,11,.03)] p-8 md:p-12">
+                <Reveal delay={100}>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="badge badge-gold">Launch offer · first 100</span>
+                    <span className="tnum font-mono text-[13px] text-[var(--color-faint)] line-through">₹1,999</span>
+                  </div>
+                  <p className="stat-num tnum text-[52px] leading-none">₹999<span className="text-[18px] text-[var(--color-muted)] font-sans font-medium">/mo</span></p>
+                  <ul className="mt-7 space-y-3">
+                    {['Full journal & 40+ analytics', 'Tradexa-GPT AI copilot', 'Weekly leak reports', 'Ad-free experience'].map((t) => (
+                      <li key={t} className="flex items-center gap-3 text-[14.5px] text-[var(--color-muted)]">
+                        <Check size={15} className="text-[var(--color-gold)] shrink-0" /> {t}
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= QUOTE ================= */}
+      <section className="sec !py-20">
+        <Reveal className="wrap max-w-3xl text-center">
+          <Zap size={22} className="text-[var(--color-profit)] mx-auto mb-6" />
+          <p className="font-display text-[clamp(1.4rem,3.2vw,2.1rem)] font-medium leading-snug tracking-tight text-[var(--color-ink)]">
+            "The first rule of trading isn't finding the opportunity.<br className="hidden md:block" /> It's surviving long enough to find the next one."
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/tools/edge-validator" className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-emerald-600 transition-colors">
-              Explore Edge Validator <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white/5 border border-white/10 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-white/10 transition-colors">
-              Meet Tradexa-GPT
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Abstract Chart Graphic */}
-        <motion.div 
-          style={{ y }}
-          className="relative hidden lg:block h-[600px] pointer-events-none"
-        >
-          <div className="w-full h-full border border-white/10 rounded-3xl bg-neutral-900/40 backdrop-blur-md p-8 relative overflow-hidden shadow-2xl">
-            {/* Animated Candlesticks Background */}
-            <div className="absolute inset-0 opacity-20 flex items-end justify-around px-12 pb-12">
-               {[40, 70, 30, 90, 50, 80, 60].map((h, i) => (
-                 <motion.div 
-                   key={i}
-                   animate={{ height: [h + '%', (h+20) + '%', h + '%'] }}
-                   transition={{ duration: 3 + i, repeat: Infinity, ease: "easeInOut" }}
-                   className={i % 2 === 0 ? 'w-8 rounded-t-sm bg-emerald-500' : 'w-8 rounded-t-sm bg-red-500'}
-                 >
-                   <div className="w-1 h-full bg-white/50 mx-auto -translate-y-4 translate-y-4 scale-y-150"></div>
-                 </motion.div>
-               ))}
-            </div>
-
-            {/* Floating Finance Cards */}
-            <motion.div 
-              animate={{ y: [0, -15, 0] }} 
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-12 left-8 w-48 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 p-5 shadow-[0_0_30px_rgba(99,102,241,0.2)] backdrop-blur-md"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Net P&L</span>
-                <IndianRupee className="w-4 h-4 text-indigo-400" />
-              </div>
-              <span className="text-3xl font-bold text-white block mb-1">₹4,29,290</span>
-              <span className="text-xs text-emerald-400 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> +12.4% this week</span>
-            </motion.div>
-
-            <motion.div 
-              animate={{ y: [0, 20, 0] }} 
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute bottom-24 right-10 w-52 bg-emerald-500/20 rounded-2xl border border-emerald-500/30 p-5 shadow-[0_0_30px_rgba(16,185,129,0.2)] backdrop-blur-md"
-            >
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-xs font-semibold text-emerald-300 uppercase tracking-wider">Win Rate</span>
-                <PieChart className="w-4 h-4 text-emerald-400" />
-              </div>
-              <span className="text-4xl font-bold text-white block mb-1">68.4%</span>
-              <div className="w-full bg-black/50 h-2 rounded-full overflow-hidden mt-3">
-                <div className="bg-emerald-400 w-[68.4%] h-full rounded-full"></div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              animate={{ x: [0, -20, 0] }} 
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-              className="absolute top-1/2 right-12 w-40 bg-red-500/10 rounded-2xl border border-red-500/20 p-4 backdrop-blur-md"
-            >
-              <span className="text-xs font-semibold text-red-300 uppercase tracking-wider block mb-1">Max Drawdown</span>
-              <span className="text-xl font-bold text-white block">-2.1%</span>
-            </motion.div>
-          </div>
-        </motion.div>
+          <p className="mt-6 text-[12px] font-bold uppercase tracking-[0.24em] text-[var(--color-faint)]">Tradexa risk philosophy</p>
+        </Reveal>
       </section>
 
-      {/* Value Strip */}
-      <div className="w-full border-y border-white/10 bg-white/5 py-4 overflow-hidden flex whitespace-nowrap">
-        <motion.div 
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 20, repeat: Infinity }}
-          className="flex gap-16 text-sm font-medium tracking-widest uppercase text-neutral-400 items-center"
-        >
-          <span>Risk Intelligence</span><span>·</span>
-          <span>Position Sizing</span><span>·</span>
-          <span>Trading Psychology</span><span>·</span>
-          <span>Market Insights</span><span>·</span>
-          <span>AI Assistance</span><span>·</span>
-          <span>Risk Intelligence</span><span>·</span>
-          <span>Position Sizing</span><span>·</span>
-          <span>Trading Psychology</span><span>·</span>
-          <span>Market Insights</span><span>·</span>
-          <span>AI Assistance</span>
-        </motion.div>
-      </div>
-
-      {/* Built for Better Decisions */}
-      <section className="py-32 px-6 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 leading-tight">
-              Trading isn't about predicting everything.<br />
-              It's about managing what you can control.
-            </h2>
-            <p className="text-xl text-neutral-400 leading-relaxed">
-              Tradexa brings essential trading intelligence into one place — helping you understand risk, size positions responsibly, and approach markets with unwavering discipline.
-            </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative h-[400px] rounded-3xl border border-white/10 bg-neutral-900/50 p-8 flex flex-col justify-center items-center"
-          >
-             <div className="flex flex-col gap-4 w-full max-w-sm">
-               <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex justify-between items-center">
-                  <span className="text-emerald-400 text-sm font-medium">Target</span>
-                  <span className="text-white font-mono">24,500</span>
-               </div>
-               <div className="w-px h-8 bg-neutral-800 mx-auto"></div>
-               <div className="p-4 rounded-xl border border-white/10 bg-white/5 flex justify-between items-center">
-                  <span className="text-neutral-400 text-sm font-medium">Entry</span>
-                  <span className="text-white font-mono">24,200</span>
-               </div>
-               <div className="w-px h-8 bg-neutral-800 mx-auto"></div>
-               <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/10 flex justify-between items-center">
-                  <span className="text-red-400 text-sm font-medium">Stop Loss</span>
-                  <span className="text-white font-mono">24,100</span>
-               </div>
-             </div>
-          </motion.div>
+      {/* ================= FAQ ================= */}
+      <section className="sec !pt-0">
+        <div className="wrap max-w-3xl">
+          <SectionHead kicker="FAQ" title="Questions, answered." />
+          <FaqAccordion items={FAQS} />
         </div>
       </section>
 
-      {/* Core Tools Bento Grid */}
-      <section className="py-32 px-6 max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-16 text-center">Everything you need to trade with discipline.</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-          {/* Card 1 */}
-          <Link to="/tradexa-gpt" className="group md:col-span-2 relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden hover:border-indigo-500/50 transition-colors p-8 flex flex-col justify-end">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[80px] group-hover:bg-indigo-500/30 transition-colors"></div>
-            <BrainCircuit className="w-12 h-12 text-indigo-400 mb-auto" />
-            <h3 className="text-2xl font-bold mb-2">Tradexa-GPT</h3>
-            <p className="text-neutral-400 mb-6 max-w-md">Your AI-powered trading intelligence companion. Analyze markets and manage risk instantly.</p>
-            <span className="inline-flex items-center text-sm font-medium text-white gap-2 group-hover:gap-3 transition-all">Explore Tradexa-GPT <ArrowRight className="w-4 h-4"/></span>
-          </Link>
-          
-          {/* Card 2 */}
-          <Link to="/tools/edge-validator" className="group relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden hover:border-emerald-500/50 transition-colors p-8 flex flex-col justify-end">
-            <ShieldAlert className="w-12 h-12 text-emerald-400 mb-auto" />
-            <h3 className="text-2xl font-bold mb-2">Edge Validator</h3>
-            <p className="text-neutral-400 mb-6 text-sm">Calculate your strategy edge, risk of ruin, and run Monte Carlo simulations.</p>
-            <span className="inline-flex items-center text-sm font-medium text-white gap-2 group-hover:gap-3 transition-all">Calculate Edge <ArrowRight className="w-4 h-4"/></span>
-          </Link>
-
-          {/* Card 3 */}
-          <Link to="/blogs" className="group relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden hover:border-white/30 transition-colors p-8 flex flex-col justify-end">
-            <BookOpen className="w-12 h-12 text-neutral-300 mb-auto" />
-            <h3 className="text-xl font-bold mb-2">Finance Intelligence</h3>
-            <p className="text-neutral-400 mb-6 text-sm">Read practical insights on markets and psychology.</p>
-          </Link>
-
-          {/* Card 4 */}
-          <div className="group md:col-span-2 relative rounded-3xl border border-white/10 bg-neutral-900/50 overflow-hidden p-8 flex flex-col justify-end">
-            <Activity className="w-12 h-12 text-blue-400 mb-auto" />
-            <h3 className="text-2xl font-bold mb-2">Know Your Exposure</h3>
-            <p className="text-neutral-400 mb-6 max-w-md">Understand exactly how much you're risking across all your active positions in real-time.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Tradexa-GPT Preview Section */}
-      <section className="py-32 border-y border-white/10 bg-neutral-900/30 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="max-w-2xl mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Your trading questions.<br/>One intelligent interface.</h2>
-            <p className="text-xl text-neutral-400 leading-relaxed mb-8">
-              Tradexa-GPT helps you explore trading concepts, analyze risk scenarios, understand financial concepts, and structure your thinking around the markets.
-            </p>
-            <Link to="/tradexa-gpt" className="inline-flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-medium hover:bg-neutral-200 transition-colors">
-              Try Tradexa-GPT <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="max-w-3xl rounded-2xl border border-white/10 bg-neutral-950 p-6 shadow-2xl">
-            <div className="flex gap-4 mb-6">
-              <div className="w-8 h-8 rounded-full bg-neutral-800 flex-shrink-0 flex items-center justify-center">U</div>
-              <div className="bg-neutral-900 rounded-2xl rounded-tl-none p-4 text-sm text-neutral-200">
-                How much should I risk on a NIFTY options trade if my account size is ₹1,00,000 and my stop loss is 20 points?
+      {/* ================= FINAL CTA ================= */}
+      <section className="sec !pt-4">
+        <div className="wrap">
+          <Reveal scale>
+            <div className="relative panel overflow-hidden !p-0">
+              <div className="absolute inset-0 bg-grid opacity-70" />
+              <div className="bg-glow w-[500px] h-[300px] bg-[rgba(14,203,129,.1)] top-[-100px] left-1/2 -translate-x-1/2" />
+              <div className="relative px-8 py-16 md:py-20 text-center max-w-2xl mx-auto">
+                <span className="kicker !justify-center">Get started</span>
+                <h2 className="display-2 mt-4 mb-5">Stop guessing.<br /><span className="grad-text">Start measuring.</span></h2>
+                <p className="lede mx-auto mb-8">Join Tradexa GPT free. Your first leak report is 3 days away.</p>
+                <div className="flex flex-col sm:flex-row gap-3.5 justify-center">
+                  <Link to={isAuthenticated ? '/dashboard' : '/register'} className="btn btn-profit btn-lg">
+                    {isAuthenticated ? 'Open dashboard' : 'Start free trial'} <ArrowRight size={18} />
+                  </Link>
+                  <Link to="/pricing" className="btn btn-ghost btn-lg">Compare plans</Link>
+                </div>
+                <p className="mt-6 text-[12.5px] text-[var(--color-faint)] inline-flex items-center gap-2">
+                  <Lock size={13} /> No credit card required · Cancel anytime
+                </p>
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-indigo-500 flex-shrink-0 flex items-center justify-center">T</div>
-              <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl rounded-tl-none p-4 text-sm text-neutral-200 leading-relaxed">
-                Based on a standard 1% risk rule, you should risk ₹1,000 per trade.<br/><br/>
-                With a 20-point stop loss on NIFTY, your risk per lot (25 qty) is ₹500.<br/>
-                Therefore, your optimal position size is **2 lots (50 quantity)**.
-              </div>
-            </div>
-          </div>
+          </Reveal>
         </div>
-      </section>
-
-      {/* Quote Section */}
-      <section className="py-32 px-6 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-8 leading-tight italic">
-          "The first rule of trading isn't finding the opportunity. It's surviving long enough to find the next one."
-        </h2>
-        <p className="text-neutral-400 uppercase tracking-widest text-sm font-semibold">Tradexa Risk Philosophy</p>
       </section>
 
       <HorizontalDisclaimer />
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-neutral-950 pt-20 pb-10 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-          <div>
-            <div className="flex items-center gap-2 text-xl font-bold text-white mb-6">
-              <div className="w-6 h-6 rounded-md bg-indigo-500 flex items-center justify-center text-xs">T</div>
-              Tradexa GPT
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-4">Product</h4>
-            <ul className="space-y-3 text-sm text-neutral-400">
-              <li><Link to="/tradexa-gpt" className="hover:text-white">Tradexa-GPT</Link></li>
-              <li><Link to="/tools/edge-validator" className="hover:text-white">Edge Validator</Link></li>
-              <li><Link to="/blogs" className="hover:text-white">Finance Blogs</Link></li>
-              <li><Link to="/login" className="hover:text-white">Trading Tools</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-4">Company</h4>
-            <ul className="space-y-3 text-sm text-neutral-400">
-              <li><Link to="/vision" className="hover:text-white">Our Vision</Link></li>
-              <li><Link to="/about" className="hover:text-white">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-white">Contact Us</Link></li>
-              <li><Link to="/faq" className="hover:text-white">FAQ</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-4">Legal</h4>
-            <ul className="space-y-3 text-sm text-neutral-400">
-              <li><Link to="/privacy" className="hover:text-white">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-white">Terms of Service</Link></li>
-              <li><Link to="/risk-disclaimer" className="hover:text-white">Risk Disclaimer</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 text-xs text-neutral-500 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2026 Tradexa GPT. All rights reserved.</p>
-          <p className="max-w-2xl text-center md:text-right">
-            Tradexa GPT provides educational and informational tools. Nothing on this platform constitutes financial, investment, or trading advice. Trading and investing involve risk, and users should make decisions based on their own circumstances.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
-  );
+  )
 }
-
-
-
