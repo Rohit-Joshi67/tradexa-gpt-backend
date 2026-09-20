@@ -1,40 +1,32 @@
-﻿import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X } from 'lucide-react';
+import { useState } from 'react'
+import { AlertTriangle, X } from 'lucide-react'
 
 export default function FloatingDisclaimer() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(true)
 
-  if (!isVisible) return null;
+  if (!isVisible) return null
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 100, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-        className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 z-50"
-      >
-        <div className="bg-neutral-900/90 backdrop-blur-md border border-neutral-800 p-4 rounded-2xl shadow-2xl flex items-start gap-4 max-w-md">
-          <div className="bg-emerald-500/20 p-2 rounded-full">
-            <AlertTriangle className="w-5 h-5 text-emerald-500" />
-          </div>
-          <div className="flex-1">
-            <h4 className="text-sm font-semibold text-white mb-1">Risk Disclaimer</h4>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Trading involves significant risk. The tools provided are for educational and informational purposes only. Do not risk money you cannot afford to lose.
-            </p>
-          </div>
-          <button 
-            onClick={() => setIsVisible(false)}
-            className="text-neutral-500 hover:text-white transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 z-50 animate-[float-in_.5s_cubic-bezier(.22,.8,.3,1)_both]">
+      <div className="bg-[rgba(10,14,20,.92)] backdrop-blur-xl border border-[var(--color-line2)] p-4 rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,.55)] flex items-start gap-3.5 max-w-md">
+        <span className="grid place-items-center w-9 h-9 rounded-xl bg-[var(--color-gold-dim)] border border-[rgba(240,185,11,.35)] shrink-0">
+          <AlertTriangle size={17} className="text-[var(--color-gold)]" />
+        </span>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-[13.5px] font-bold text-[var(--color-ink)] mb-1">Risk disclaimer</h4>
+          <p className="text-[12.5px] text-[var(--color-muted)] leading-relaxed">
+            Trading involves significant risk. The tools here are for educational and informational purposes only.
+            Never risk money you cannot afford to lose.
+          </p>
         </div>
-      </motion.div>
-    </AnimatePresence>
-  );
+        <button
+          onClick={() => setIsVisible(false)}
+          className="text-[var(--color-faint)] hover:text-[var(--color-ink)] transition-colors shrink-0"
+          aria-label="Dismiss disclaimer"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
 }
-

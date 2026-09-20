@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { Link } from 'react-router-dom'
+import SiteNav from '../components/ui/SiteNav'
+import SiteFooter from '../components/ui/SiteFooter'
+import PageHero from '../components/ui/PageHero'
+import FaqAccordion from '../components/ui/FaqAccordion'
+import Reveal from '../components/ui/Reveal'
 
 const FAQS = [
   {
@@ -35,46 +38,32 @@ const FAQS = [
     q: 'Is my trading data private?',
     a: 'Yes. Your journal data is tied to your account and never shared or sold. See the Privacy Policy for details.',
   },
-];
-
-function Item({ q, a }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border border-white/10 rounded-2xl bg-neutral-900/50 overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-4 p-5 text-left"
-      >
-        <span className="text-white font-medium">{q}</span>
-        <ChevronDown className={`w-5 h-5 text-neutral-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && <p className="px-5 pb-5 text-sm text-neutral-400 leading-relaxed">{a}</p>}
-    </div>
-  );
-}
+]
 
 export default function Faq() {
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-300 p-8 pt-32">
-      <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-neutral-950/80 backdrop-blur-md border-b border-white/5">
-        <Link to="/" className="font-bold text-xl text-white">T Tradexa GPT</Link>
-      </nav>
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center gap-3 mb-4">
-          <HelpCircle className="w-8 h-8 text-indigo-400" />
-          <h1 className="text-4xl font-bold text-white">FAQ</h1>
+    <div className="min-h-screen">
+      <SiteNav />
+      <PageHero
+        kicker="Help center"
+        title="Frequently asked questions"
+        lede="Quick answers to the questions we hear most about plans, the journal, the copilot and your data."
+      />
+      <section className="sec !pt-0">
+        <div className="wrap max-w-3xl">
+          <FaqAccordion items={FAQS} />
+          <Reveal delay={120}>
+            <p className="text-[14.5px] text-[var(--color-faint)] mt-10 text-center">
+              Still stuck?{' '}
+              <Link to="/contact" className="text-[var(--color-profit)] font-semibold hover:underline">
+                Contact us
+              </Link>
+              .
+            </p>
+          </Reveal>
         </div>
-        <p className="text-sm mb-8">Quick answers to the questions we hear most.</p>
-        <div className="space-y-3">
-          {FAQS.map((f) => (
-            <Item key={f.q} q={f.q} a={f.a} />
-          ))}
-        </div>
-        <p className="text-sm text-neutral-500 mt-8">
-          Still stuck? <Link to="/contact" className="text-indigo-400 hover:text-indigo-300">Contact us</Link>.
-        </p>
-      </div>
+      </section>
+      <SiteFooter />
     </div>
-  );
+  )
 }

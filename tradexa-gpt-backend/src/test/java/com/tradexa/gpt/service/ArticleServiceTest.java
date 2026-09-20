@@ -75,4 +75,34 @@ class ArticleServiceTest {
         assertEquals("risk,psychology",
                 ArticleService.normalizeTags(" risk , psychology "));
     }
+
+    @Test
+    void parseCategory_acceptsValidCaseInsensitive() {
+        assertEquals("TRADING", ArticleService.parseCategory("trading"));
+        assertEquals("PERSONAL_FINANCE", ArticleService.parseCategory("Personal_Finance"));
+    }
+
+    @Test
+    void parseCategory_nullForBlank() {
+        assertTrue(ArticleService.parseCategory(null) == null);
+        assertTrue(ArticleService.parseCategory("  ") == null);
+    }
+
+    @Test
+    void parseCategory_rejectsUnknown() {
+        try {
+            ArticleService.parseCategory("crypto-memes");
+            assertTrue(false, "expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("Category must be one of"));
+        }
+    }
+
+    @Test
+    void normalizeCategoryFilter_ignoresBlankAllAndUnknown() {
+        assertTrue(ArticleService.normalizeCategoryFilter(null) == null);
+        assertTrue(ArticleService.normalizeCategoryFilter("all") == null);
+        assertTrue(ArticleService.normalizeCategoryFilter("nope") == null);
+        assertEquals("INVESTING", ArticleService.normalizeCategoryFilter("investing"));
+    }
 }

@@ -14,6 +14,8 @@ public class ArticleSummaryDTO {
     private List<String> tags;
     private Instant publishedAt;
     private int readingMinutes;
+    private String category;
+    private long viewCount;
 
     public ArticleSummaryDTO() {
     }
@@ -41,4 +43,10 @@ public class ArticleSummaryDTO {
 
     public int getReadingMinutes() { return readingMinutes; }
     public void setReadingMinutes(int readingMinutes) { this.readingMinutes = readingMinutes; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public long getViewCount() { return viewCount; }
+    public void setViewCount(long viewCount) { this.viewCount = viewCount; }
 }

@@ -1,12 +1,17 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowLeft, BadgeCheck, Check, CheckCircle2, Loader2, ShieldCheck, Sparkles, XCircle, Zap } from 'lucide-react'
+import { ArrowLeft, BadgeCheck, Check, CheckCircle2, Loader2, ShieldCheck, Sparkles, XCircle, Zap, Lock } from 'lucide-react'
 import { apiErrorMessage } from '../api/client'
 import { createSubscription, verifyPayment } from '../api/billing'
 import { useAuth } from '../context/AuthContext'
 import { usePlan } from '../context/PlanContext'
 import { formatPaise } from '../utils/format'
+import SiteNav from '../components/ui/SiteNav'
+import SiteFooter from '../components/ui/SiteFooter'
+import PageHero from '../components/ui/PageHero'
+import Reveal from '../components/ui/Reveal'
+import SectionHead from '../components/ui/SectionHead'
+import FaqAccordion from '../components/ui/FaqAccordion'
 
 const RAZORPAY_SCRIPT = 'https://checkout.razorpay.com/v1/checkout.js'
 
@@ -47,12 +52,33 @@ const INTERVALS = {
   yearly: { label: 'Yearly', price: '₹19,999', suffix: '/year', launchPrice: '₹9,999', launchSuffix: '/year' },
 }
 
-function FeatureList({ items, accent }) {
+const PLAN_FAQS = [
+  {
+    q: 'How does the launch offer work?',
+    a: 'The first 100 Pro subscribers lock in 50% off — ₹999/month or ₹9,999/year — for as long as they stay subscribed. Once the 100 slots are gone, Pro is ₹1,999/month or ₹19,999/year.',
+  },
+  {
+    q: 'What happens after my 3-day free trial?',
+    a: 'The journal locks and articles stay free with ads. Nothing is charged — ever — unless you explicitly choose a Pro plan.',
+  },
+  {
+    q: 'Can I cancel my subscription?',
+    a: 'Anytime, in one click from your dashboard. You keep Pro until the end of your billing period. No calls, no retention maze.',
+  },
+  {
+    q: 'Which payment methods are accepted?',
+    a: 'UPI, credit/debit cards and netbanking — processed securely through Razorpay. We never see or store your card details.',
+  },
+]
+
+function FeatureList({ items, iconClass }) {
   return (
-    <ul className="space-y-3 text-left">
+    <ul className="space-y-3.5 text-left">
       {items.map((item) => (
-        <li key={item} className="flex items-start gap-3 text-sm text-neutral-300">
-          <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${accent}`} />
+        <li key={item} className="flex items-start gap-3 text-[14.5px] text-[var(--color-muted)]">
+          <span className="grid place-items-center w-[22px] h-[22px] rounded-full bg-[var(--color-profit-dim)] shrink-0 mt-0.5">
+            <Check size={13} className={iconClass} />
+          </span>
           <span>{item}</span>
         </li>
       ))}
@@ -105,13 +131,13 @@ export default function PricingPage() {
       const options = {
         key: details.keyId,
         subscription_id: details.razorpaySubscriptionId,
-        name: 'Tradexa',
+        name: 'Tradexa GPT',
         description: 'Tradexa Pro',
         prefill: {
           name: details.customerName || '',
           email: details.customerEmail || '',
         },
-        theme: { color: '#6366f1' },
+        theme: { color: '#0ecb81' },
         modal: {
           ondismiss: () => {
             if (processingRef.current) {
@@ -154,202 +180,201 @@ export default function PricingPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-[#0a0a0a] text-neutral-50 font-sans">
-      {/* Header */}
-      <header className="border-b border-white/5 bg-neutral-950/50 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold text-white tracking-tight">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center text-sm">T</div>
-            Tradexa
-          </Link>
-          <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium text-neutral-400 hover:text-white transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back home
-          </Link>
-        </div>
-      </header>
+  const busy = stage === 'creating' || stage === 'verifying'
 
-      <main className="max-w-6xl mx-auto px-6 py-16 md:py-24">
+  return (
+    <div className="min-h-screen bg-[var(--color-abyss)] text-[var(--color-ink)]">
+      <SiteNav />
+
+      <PageHero
+        kicker="Pricing"
+        title={<>Trade like a <span className="grad-gold">professional.</span></>}
+        lede="Start free. Upgrade when you're ready for the full quant toolkit — unlimited journal, deep analytics, and your AI copilot."
+      >
+        <Reveal delay={120}>
+          <span className="badge badge-gold !text-[12px] !py-2 !px-4">
+            <Sparkles size={13} /> Launch offer — first 100 members pay 50% off
+          </span>
+        </Reveal>
+      </PageHero>
+
+      <main className="wrap pb-24">
         {stage === 'success' ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-lg mx-auto text-center rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-12"
-          >
-            <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold mb-4">Welcome to Tradexa Pro</h1>
-            <p className="text-neutral-400 mb-8">
-              Your subscription is active. Unlimited journal, deep analytics, the AI copilot —
-              and zero ads. Trade with discipline.
-            </p>
-            <Link
-              to="/dashboard"
-              className="inline-block w-full py-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-colors"
-            >
-              Go to Dashboard
-            </Link>
-          </motion.div>
+          <Reveal scale className="max-w-lg mx-auto">
+            <div className="panel p-10 md:p-12 text-center !border-[rgba(14,203,129,.35)] bg-[linear-gradient(180deg,rgba(14,203,129,.08),var(--color-panel))]">
+              <span className="grid place-items-center w-16 h-16 rounded-full bg-[var(--color-profit-dim)] border border-[rgba(14,203,129,.4)] mx-auto mb-6">
+                <CheckCircle2 size={30} className="text-[var(--color-profit)]" />
+              </span>
+              <h2 className="font-display font-bold text-[26px] tracking-tight mb-3">Welcome to Tradexa Pro</h2>
+              <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed mb-8">
+                Your subscription is active. Unlimited journal, deep analytics, the AI copilot —
+                and zero ads. Trade with discipline.
+              </p>
+              <Link to="/dashboard" className="btn btn-profit btn-lg w-full">
+                Go to Dashboard
+              </Link>
+            </div>
+          </Reveal>
         ) : (
           <>
-            {/* Heading */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300 bg-indigo-500/10 border border-indigo-500/30 rounded-full px-4 py-2 mb-6">
-                <Sparkles className="w-3.5 h-3.5" /> Launch offer — first 100 members pay 50% off
-              </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-                Trade like a <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">professional</span>
-              </h1>
-              <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-                Start free. Upgrade when you're ready for the full quant toolkit —
-                unlimited journal, deep analytics, and your AI copilot.
-              </p>
-            </div>
-
             {/* Interval toggle */}
-            <div className="flex justify-center mb-12">
-              <div className="inline-flex rounded-full border border-white/10 bg-neutral-900/50 p-1">
+            <Reveal className="flex justify-center mb-10">
+              <div className="inline-flex rounded-2xl border border-[var(--color-line2)] bg-[var(--color-panel)] p-1.5 gap-1" role="tablist" aria-label="Billing interval">
                 {Object.entries(INTERVALS).map(([key, value]) => (
                   <button
                     key={key}
                     type="button"
+                    role="tab"
+                    aria-selected={interval === key}
                     onClick={() => setInterval(key)}
-                    className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-colors ${
-                      interval === key ? 'bg-indigo-500 text-white' : 'text-neutral-400 hover:text-white'
+                    className={`px-7 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer ${
+                      interval === key
+                        ? 'bg-[var(--color-profit)] text-[#04120c] shadow-[0_6px_20px_rgba(14,203,129,.3)]'
+                        : 'text-[var(--color-muted)] hover:text-[var(--color-ink)]'
                     }`}
                   >
                     {value.label}
+                    {key === 'yearly' && <span className={`ml-2 text-[11px] font-bold ${interval === key ? 'text-[#04120c]/70' : 'text-[var(--color-profit)]'}`}>−17%</span>}
                   </button>
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            {/* Already Pro state */}
             {!planLoading && plan === 'PRO' ? (
-              <div className="max-w-lg mx-auto text-center rounded-3xl border border-indigo-500/30 bg-indigo-500/10 p-12">
-                <BadgeCheck className="w-16 h-16 text-indigo-400 mx-auto mb-6" />
-                <h2 className="text-3xl font-bold mb-4">You're on Tradexa Pro</h2>
-                <p className="text-neutral-400 mb-8">
-                  Your subscription is active. Everything is unlocked — enjoy the full toolkit.
-                </p>
-                <Link
-                  to="/dashboard"
-                  className="inline-block w-full py-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-colors"
-                >
-                  Go to Dashboard
-                </Link>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
-                {/* Free card */}
-                <div className="rounded-3xl border border-white/10 bg-neutral-900/50 p-8 flex flex-col">
-                  <h2 className="text-xl font-bold mb-2">Free</h2>
-                  <p className="text-neutral-400 text-sm mb-6">Learn the craft, on us.</p>
-                  <div className="mb-8">
-                    <span className="text-5xl font-bold">₹0</span>
-                    <span className="text-neutral-500"> forever</span>
-                  </div>
-                  <div className="flex-1 mb-8">
-                    <FeatureList items={FREE_FEATURES} accent="text-neutral-400" />
-                  </div>
-                  <Link
-                    to={isAuthenticated ? '/dashboard' : '/register?next=/pricing'}
-                    className="block text-center w-full py-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold transition-colors"
-                  >
-                    {isAuthenticated ? 'Go to Dashboard' : 'Create Free Account'}
+              <Reveal scale className="max-w-lg mx-auto">
+                <div className="panel p-10 md:p-12 text-center !border-[rgba(240,185,11,.35)] bg-[linear-gradient(180deg,rgba(240,185,11,.07),var(--color-panel))]">
+                  <span className="grid place-items-center w-16 h-16 rounded-full bg-[var(--color-gold-dim)] border border-[rgba(240,185,11,.4)] mx-auto mb-6">
+                    <BadgeCheck size={30} className="text-[var(--color-gold)]" />
+                  </span>
+                  <h2 className="font-display font-bold text-[26px] tracking-tight mb-3">You're on Tradexa Pro</h2>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed mb-8">
+                    Your subscription is active. Everything is unlocked — enjoy the full toolkit.
+                  </p>
+                  <Link to="/dashboard" className="btn btn-gold btn-lg w-full">
+                    Go to Dashboard
                   </Link>
                 </div>
-
-                {/* Pro card */}
-                <div className="relative rounded-3xl border border-indigo-500/50 bg-gradient-to-b from-indigo-500/15 to-neutral-900/50 p-8 flex flex-col shadow-[0_0_60px_rgba(99,102,241,0.15)]">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-indigo-500 text-white rounded-full px-4 py-1.5">
-                    <Zap className="w-3.5 h-3.5" /> Most popular
-                  </div>
-                  <h2 className="text-xl font-bold mb-2">Tradexa Pro</h2>
-                  <p className="text-neutral-400 text-sm mb-6">The full quant toolkit for serious traders.</p>
-                  <div className="mb-2">
-                    <span className="text-5xl font-bold">{prices.price}</span>
-                    <span className="text-neutral-500">{prices.suffix}</span>
-                  </div>
-                  <p className="text-sm text-emerald-400 font-semibold mb-8">
-                    Launch price: {prices.launchPrice}
-                    {prices.launchSuffix} for the first 100 members
-                  </p>
-                  <div className="flex-1 mb-8">
-                    <FeatureList items={PRO_FEATURES} accent="text-indigo-400" />
-                  </div>
-
-                  {stage === 'confirm' && details ? (
-                    <div className="rounded-2xl border border-indigo-500/30 bg-indigo-500/10 p-6 mb-4">
-                      <p className="text-sm text-neutral-300 mb-1">Confirm your subscription</p>
-                      <p className="text-2xl font-bold text-white mb-1">
-                        {formatPaise(details.amountPaise)}
-                        <span className="text-sm font-normal text-neutral-400">
-                          {interval === 'monthly' ? ' /month' : ' /year'}
-                        </span>
-                      </p>
-                      {details.planCode === 'PRO_LAUNCH' && (
-                        <p className="text-xs text-emerald-400 font-semibold mb-4">
-                          Launch offer applied — you locked in 50% off.
-                        </p>
-                      )}
-                      <div className="flex gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setStage('idle')}
-                          className="flex-1 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-semibold transition-colors"
-                        >
-                          Back
-                        </button>
-                        <button
-                          type="button"
-                          onClick={openCheckout}
-                          className="flex-1 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-colors"
-                        >
-                          Pay Securely
-                        </button>
-                      </div>
-                      <p className="text-xs text-neutral-500 mt-4 flex items-center gap-1.5">
-                        <ShieldCheck className="w-3.5 h-3.5" /> Payments processed securely by Razorpay (UPI, cards, netbanking)
-                      </p>
+              </Reveal>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-stretch">
+                {/* Free */}
+                <Reveal>
+                  <div className="panel p-8 md:p-9 flex flex-col h-full">
+                    <h2 className="font-display font-semibold text-[20px] tracking-tight">Free</h2>
+                    <p className="text-[var(--color-muted)] text-[13.5px] mt-1 mb-7">Learn the craft, on us.</p>
+                    <p className="mb-8">
+                      <span className="stat-num tnum text-[52px] leading-none">₹0</span>
+                      <span className="text-[var(--color-faint)] text-[14px]"> forever</span>
+                    </p>
+                    <div className="flex-1 mb-8">
+                      <FeatureList items={FREE_FEATURES} iconClass="text-[var(--color-muted)]" />
                     </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleUpgrade}
-                      disabled={stage === 'creating' || stage === 'verifying'}
-                      className="w-full py-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-bold transition-colors inline-flex items-center justify-center gap-2"
+                    <Link
+                      to={isAuthenticated ? '/dashboard' : '/register?next=/pricing'}
+                      className="btn btn-ghost w-full"
                     >
-                      {(stage === 'creating' || stage === 'verifying') && <Loader2 className="w-5 h-5 animate-spin" />}
-                      {stage === 'creating'
-                        ? 'Preparing checkout…'
-                        : stage === 'verifying'
-                          ? 'Confirming payment…'
-                          : isAuthenticated
-                            ? `Upgrade to Pro`
-                            : 'Create Account & Upgrade'}
-                    </button>
-                  )}
+                      {isAuthenticated ? 'Go to Dashboard' : 'Create Free Account'}
+                    </Link>
+                  </div>
+                </Reveal>
 
-                  {error && (
-                    <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300 flex items-start gap-2">
-                      <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                      <span>{error}</span>
+                {/* Pro */}
+                <Reveal delay={110} scale>
+                  <div className="relative panel p-8 md:p-9 flex flex-col h-full !border-[rgba(240,185,11,.4)] bg-[linear-gradient(180deg,rgba(240,185,11,.06),var(--color-panel))] shadow-[0_24px_70px_rgba(240,185,11,.08)]">
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 badge badge-gold !text-[11px] whitespace-nowrap shadow-lg">
+                      <Zap size={12} /> Most popular
+                    </span>
+                    <h2 className="font-display font-semibold text-[20px] tracking-tight">Tradexa Pro</h2>
+                    <p className="text-[var(--color-muted)] text-[13.5px] mt-1 mb-7">The full quant toolkit for serious traders.</p>
+                    <div className="mb-1.5 flex items-baseline gap-3">
+                      <span className="tnum font-mono text-[15px] text-[var(--color-faint)] line-through">{prices.price}</span>
+                      <span className="stat-num tnum text-[52px] leading-none grad-gold">{prices.launchPrice}</span>
+                      <span className="text-[var(--color-faint)] text-[14px]">{prices.launchSuffix}</span>
                     </div>
-                  )}
-                </div>
+                    <p className="text-[13px] text-[var(--color-gold)] font-semibold mb-8">
+                      Launch price locked for the first 100 members
+                    </p>
+                    <div className="flex-1 mb-8">
+                      <FeatureList items={PRO_FEATURES} iconClass="text-[var(--color-gold)]" />
+                    </div>
+
+                    {stage === 'confirm' && details ? (
+                      <div className="rounded-2xl border border-[rgba(240,185,11,.35)] bg-[rgba(240,185,11,.06)] p-5 mb-2">
+                        <p className="text-[13px] text-[var(--color-muted)] mb-1">Confirm your subscription</p>
+                        <p className="stat-num tnum text-[30px] mb-1">
+                          {formatPaise(details.amountPaise)}
+                          <span className="text-[14px] font-sans font-normal text-[var(--color-muted)]">
+                            {interval === 'monthly' ? ' /month' : ' /year'}
+                          </span>
+                        </p>
+                        {details.planCode === 'PRO_LAUNCH' && (
+                          <p className="text-[12.5px] text-[var(--color-profit)] font-semibold mb-4">
+                            Launch offer applied — you locked in 50% off.
+                          </p>
+                        )}
+                        <div className="flex gap-3">
+                          <button type="button" onClick={() => setStage('idle')} className="btn btn-ghost flex-1">
+                            Back
+                          </button>
+                          <button type="button" onClick={openCheckout} className="btn btn-gold flex-1">
+                            <Lock size={15} /> Pay Securely
+                          </button>
+                        </div>
+                        <p className="text-[12px] text-[var(--color-faint)] mt-4 flex items-center gap-1.5">
+                          <ShieldCheck size={14} className="shrink-0" /> UPI, cards &amp; netbanking via Razorpay
+                        </p>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleUpgrade}
+                        disabled={busy}
+                        className="btn btn-gold btn-lg w-full"
+                      >
+                        {busy && <Loader2 size={18} className="animate-spin" />}
+                        {stage === 'creating'
+                          ? 'Preparing checkout…'
+                          : stage === 'verifying'
+                            ? 'Confirming payment…'
+                            : isAuthenticated
+                              ? 'Upgrade to Pro'
+                              : 'Create Account & Upgrade'}
+                      </button>
+                    )}
+
+                    {error && (
+                      <div className="alert alert-error mt-4 flex items-start gap-2.5">
+                        <XCircle size={16} className="mt-0.5 shrink-0" />
+                        <span>{error}</span>
+                      </div>
+                    )}
+                  </div>
+                </Reveal>
               </div>
             )}
 
-            {/* Trust row */}
-            <div className="mt-12 text-center text-xs text-neutral-500 max-w-2xl mx-auto">
-              <p>
-                Cancel anytime — your Pro access continues until the end of the billing period.
+            <Reveal className="mt-10 text-center">
+              <p className="text-[12.5px] text-[var(--color-faint)] max-w-2xl mx-auto leading-relaxed">
+                Cancel anytime — Pro access continues until the end of your billing period.
                 Tradexa provides educational tools only; nothing here is financial advice.
               </p>
-            </div>
+              <Link to="/" className="inline-flex items-center gap-2 mt-6 text-[13.5px] font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors">
+                <ArrowLeft size={15} /> Back home
+              </Link>
+            </Reveal>
           </>
         )}
+
+        {/* FAQ */}
+        {stage !== 'success' && (
+          <div className="max-w-3xl mx-auto mt-24">
+            <SectionHead kicker="FAQ" title="Pricing questions." />
+            <FaqAccordion items={PLAN_FAQS} />
+          </div>
+        )}
       </main>
+
+      <SiteFooter />
     </div>
   )
 }
