@@ -39,6 +39,7 @@ public class UserService {
     private final EmailService emailService;
     private final EmailProperties emailProperties;
     private final String frontendUrl;
+    private final com.tradexa.gpt.billing.SubscriptionService subscriptionService;
 
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder passwordEncoder,
@@ -47,7 +48,7 @@ public class UserService {
                        AuthTokenService authTokenService,
                        EmailService emailService,
                        EmailProperties emailProperties,
-                       @Value("${app.frontend-url:https://tradexa-gpt-frontend.vercel.app}") String frontendUrl) {
+                       @Value("${app.frontend-url:https://tradexa-gpt-frontend.vercel.app}") String frontendUrl, @org.springframework.context.annotation.Lazy com.tradexa.gpt.billing.SubscriptionService subscriptionService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -56,6 +57,7 @@ public class UserService {
         this.emailService = emailService;
         this.emailProperties = emailProperties;
         this.frontendUrl = frontendUrl;
+        this.subscriptionService = subscriptionService;
     }
 
     /**
@@ -87,7 +89,7 @@ public class UserService {
         } else {
             // Email provider not connected yet: auto-verify so signup keeps working.
             user.setEmailVerified(true);
-            log.warn("Email not configured â€” auto-verifying new user {}", email);
+            log.warn("Email not configured Ã¢â‚¬â€ auto-verifying new user {}", email);
         }
 
         User savedUser = userRepository.save(user);
@@ -117,7 +119,7 @@ public class UserService {
     /**
      * Authenticates and returns the login payload plus a fresh refresh token.
      * Both "unknown email" and "wrong password" produce the identical
-     * {@link InvalidCredentialsException} â€” no user enumeration.
+     * {@link InvalidCredentialsException} Ã¢â‚¬â€ no user enumeration.
      */
     @Transactional
     public LoginResult login(LoginRequest request) {
@@ -145,6 +147,7 @@ public class UserService {
                 changed = true;
             }
             if (changed) {
+                subscriptionService.evictPlan(user.getId());
                 userRepository.save(user);
             }
         }
@@ -175,7 +178,7 @@ public class UserService {
 
     /**
      * Starts the password-reset flow. Always silent: unknown emails and
-     * unconfigured email both produce the same outward result â€” no
+     * unconfigured email both produce the same outward result Ã¢â‚¬â€ no
      * enumeration. Requires the email provider to actually send.
      */
     @Transactional
@@ -213,4 +216,6 @@ public class UserService {
     public record LoginResult(LoginResponse response, String refreshToken) {
     }
 }
+
+
 

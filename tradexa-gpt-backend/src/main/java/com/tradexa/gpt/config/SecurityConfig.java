@@ -66,11 +66,11 @@ public class SecurityConfig {
                             "/api/v1/auth/**",
                             "/api/v1/health",
                             "/api/v1/billing/webhook", "/api/ipo/**",
-                            "/sitemap.xml"
+                            "/sitemap.xml", "/error"
                     ).permitAll();
                     // Articles are free, ad-supported content: public to read.
                     auth.requestMatchers("/api/v1/articles", "/api/v1/articles/**").permitAll();
-                    // View counting is also public ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â the reader page calls it on every load.
+                    // View counting is also public ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â the reader page calls it on every load.
                     auth.requestMatchers("/api/v1/articles/*/view").permitAll();
                     if (swaggerEnabled) {
                         auth.requestMatchers(
@@ -86,7 +86,7 @@ public class SecurityConfig {
                             response.setStatus(401);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.getWriter().write(
-                                    "{\"success\":false,\"message\":\"Unauthorized ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â please login first.\",\"data\":null}"
+                                    "{\"success\":false,\"message\":\"Unauthorized ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â please login first.\",\"data\":null}"
                             );
                         })
                 )
@@ -103,6 +103,7 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
 
 
 
