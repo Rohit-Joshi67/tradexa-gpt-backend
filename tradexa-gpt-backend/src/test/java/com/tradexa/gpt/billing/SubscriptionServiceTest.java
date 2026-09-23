@@ -29,11 +29,14 @@ class SubscriptionServiceTest {
     @Mock
     private PromoClaimRepository promoClaimRepository;
 
+    @Mock
+    private com.tradexa.gpt.repository.UserRepository userRepository;
+
     private SubscriptionService subscriptionService;
 
     @BeforeEach
     void setUp() {
-        subscriptionService = new SubscriptionService(subscriptionRepository, promoClaimRepository);
+        subscriptionService = new SubscriptionService(subscriptionRepository, promoClaimRepository, userRepository);
     }
 
     private Subscription activeSub(String planCode, Instant currentEnd) {
@@ -135,10 +138,11 @@ class SubscriptionServiceTest {
                 .thenReturn(Optional.of(activeSub("PRO", Instant.now().plus(30, ChronoUnit.DAYS))));
 
         assertEquals("FREE", subscriptionService.getEffectivePlan(8L));
-        // cached — still FREE without eviction
+        // cached â€” still FREE without eviction
         assertEquals("FREE", subscriptionService.getEffectivePlan(8L));
 
         subscriptionService.evictPlan(8L);
         assertEquals("PRO", subscriptionService.getEffectivePlan(8L));
     }
 }
+
