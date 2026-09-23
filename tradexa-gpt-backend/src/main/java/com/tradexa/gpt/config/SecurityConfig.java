@@ -69,15 +69,9 @@ public class SecurityConfig {
                             "/sitemap.xml"
                     ).permitAll();
                     // Articles are free, ad-supported content: public to read.
-                    auth.requestMatchers(
-                            HttpMethod.GET,
-                            "/api/v1/articles", "/api/v1/articles/**"
-                    ).permitAll();
-                    // View counting is also public Ã¢â‚¬â€ the reader page calls it on every load.
-                    auth.requestMatchers(
-                            HttpMethod.POST,
-                            "/api/v1/articles/*/view"
-                    ).permitAll();
+                    auth.requestMatchers("/api/v1/articles", "/api/v1/articles/**").permitAll();
+                    // View counting is also public ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â the reader page calls it on every load.
+                    auth.requestMatchers("/api/v1/articles/*/view").permitAll();
                     if (swaggerEnabled) {
                         auth.requestMatchers(
                                 "/swagger-ui/**",
@@ -92,7 +86,7 @@ public class SecurityConfig {
                             response.setStatus(401);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.getWriter().write(
-                                    "{\"success\":false,\"message\":\"Unauthorized Ã¢â‚¬â€ please login first.\",\"data\":null}"
+                                    "{\"success\":false,\"message\":\"Unauthorized ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â please login first.\",\"data\":null}"
                             );
                         })
                 )
@@ -109,5 +103,7 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+
 
 
