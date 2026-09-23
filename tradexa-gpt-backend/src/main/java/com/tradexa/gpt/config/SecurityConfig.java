@@ -65,7 +65,7 @@ public class SecurityConfig {
                     auth.requestMatchers(
                             "/api/v1/auth/**",
                             "/api/v1/health",
-                            "/api/v1/billing/webhook",
+                            "/api/v1/billing/webhook", "/api/ipo/**",
                             "/sitemap.xml"
                     ).permitAll();
                     // Articles are free, ad-supported content: public to read.
@@ -73,7 +73,7 @@ public class SecurityConfig {
                             HttpMethod.GET,
                             "/api/v1/articles", "/api/v1/articles/**"
                     ).permitAll();
-                    // View counting is also public â€” the reader page calls it on every load.
+                    // View counting is also public Ã¢â‚¬â€ the reader page calls it on every load.
                     auth.requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/articles/*/view"
@@ -92,7 +92,7 @@ public class SecurityConfig {
                             response.setStatus(401);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.getWriter().write(
-                                    "{\"success\":false,\"message\":\"Unauthorized â€” please login first.\",\"data\":null}"
+                                    "{\"success\":false,\"message\":\"Unauthorized Ã¢â‚¬â€ please login first.\",\"data\":null}"
                             );
                         })
                 )
@@ -109,4 +109,5 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
 

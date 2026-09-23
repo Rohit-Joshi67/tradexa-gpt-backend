@@ -34,6 +34,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final PromoClaimRepository promoClaimRepository;
+    private final com.tradexa.gpt.repository.UserRepository userRepository;
 
     private final Cache<Long, String> planCache = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
@@ -41,9 +42,11 @@ public class SubscriptionService {
             .build();
 
     public SubscriptionService(SubscriptionRepository subscriptionRepository,
-                               PromoClaimRepository promoClaimRepository) {
+                               PromoClaimRepository promoClaimRepository,
+                               com.tradexa.gpt.repository.UserRepository userRepository) {
         this.subscriptionRepository = subscriptionRepository;
         this.promoClaimRepository = promoClaimRepository;
+        this.userRepository = userRepository;
     }
 
     public String getEffectivePlan(Long userId) {
@@ -76,6 +79,10 @@ public class SubscriptionService {
     }
 
     private String resolvePlan(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null && user.getRole() != null && user.getRole().name().equals("ADMIN")) {
+            return PRO;
+        }
         return subscriptionRepository
                 .findTopByUserIdAndStatusInOrderByCreatedAtDesc(userId, LIVE_STATUSES)
                 .filter(Subscription::isCurrentlyActive)

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Building2, Search, AlertTriangle, CheckCircle2, AlertCircle, Info, RefreshCw } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import api from '../api/client'
 
 export default function IpoEvaluator() {
   const [ipoName, setIpoName] = useState('')
@@ -20,16 +21,17 @@ export default function IpoEvaluator() {
     setReport(null)
 
     try {
-      const response = await fetch(`/api/ipo/evaluate?name=${encodeURIComponent(ipoName)}${forceRefresh ? '&forceRefresh=true' : ''}`)
-      const data = await response.json()
+      const { data } = await api.get(`/api/ipo/evaluate`, {
+        params: { name: ipoName, forceRefresh: forceRefresh ? true : undefined }
+      })
       
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.message || 'Failed to analyze IPO')
       }
       
       setReport(data.data)
     } catch (err) {
-      setError(err.message)
+      setError(err.response?.data?.message || err.message)
     } finally {
       setLoading(false)
     }
@@ -236,3 +238,4 @@ function CategoryCard({ title, data, max }) {
     </div>
   )
 }
+
