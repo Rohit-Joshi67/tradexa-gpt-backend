@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell'
 import FloatingDisclaimer from './components/FloatingDisclaimer'
@@ -15,6 +15,7 @@ const ArticlesAdmin = lazy(() => import('./pages/admin/ArticlesAdmin'))
 const TradexaGPT = lazy(() => import('./pages/TradexaGPT'))
 const Copilot = lazy(() => import('./pages/Copilot'))
 const TradingEdgeValidator = lazy(() => import('./pages/TradingEdgeValidator'))
+const IpoEvaluator = lazy(() => import('./pages/IpoEvaluator'))
 const OurVision = lazy(() => import('./pages/OurVision'))
 const AboutUs = lazy(() => import('./pages/AboutUs'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
@@ -61,6 +62,7 @@ export default function App() {
             {/* Coming Soon Routes */}
             <Route path="/tradexa-gpt" element={<TradexaGPT />} />
           <Route path="/tools/edge-validator" element={<TradingEdgeValidator />} />
+          <Route path="/tools/ipo-evaluator" element={<IpoEvaluator />} />
             <Route path="/blogs" element={<BlogsList />} />
             <Route path="/blogs/:slug" element={<BlogReader />} />
             <Route path="/vision" element={<OurVision />} />

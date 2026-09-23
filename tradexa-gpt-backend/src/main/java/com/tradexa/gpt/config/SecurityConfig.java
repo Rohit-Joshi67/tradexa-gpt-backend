@@ -71,9 +71,9 @@ public class SecurityConfig {
                     // Articles are free, ad-supported content: public to read.
                     auth.requestMatchers(
                             HttpMethod.GET,
-                            "/api/v1/articles/**"
+                            "/api/v1/articles", "/api/v1/articles/**"
                     ).permitAll();
-                    // View counting is also public — the reader page calls it on every load.
+                    // View counting is also public â€” the reader page calls it on every load.
                     auth.requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/articles/*/view"
@@ -92,7 +92,7 @@ public class SecurityConfig {
                             response.setStatus(401);
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.getWriter().write(
-                                    "{\"success\":false,\"message\":\"Unauthorized — please login first.\",\"data\":null}"
+                                    "{\"success\":false,\"message\":\"Unauthorized â€” please login first.\",\"data\":null}"
                             );
                         })
                 )
@@ -109,3 +109,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

@@ -18,6 +18,44 @@ import java.util.Map;
 @Service
 public class AnalyticsService {
 
+    private String normalizeSymbol(String rawSymbol) {
+        if (rawSymbol == null || rawSymbol.isBlank()) return "UNKNOWN";
+        String s = rawSymbol.toUpperCase().trim();
+
+        if (s.startsWith("BANKNIFTY")) return "BANKNIFTY";
+        if (s.startsWith("NIFTY")) return "NIFTY";
+        if (s.startsWith("FINNIFTY")) return "FINNIFTY";
+        if (s.startsWith("MIDCPNIFTY")) return "MIDCPNIFTY";
+        if (s.startsWith("SENSEX")) return "SENSEX";
+        if (s.startsWith("BANKEX")) return "BANKEX";
+
+        int firstDigitIdx = -1;
+        int firstSpaceIdx = s.indexOf(' ');
+        
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                firstDigitIdx = i;
+                break;
+            }
+        }
+        
+        int endIndex = s.length();
+        if (firstSpaceIdx != -1 && firstDigitIdx != -1) {
+            endIndex = Math.min(firstSpaceIdx, firstDigitIdx);
+        } else if (firstSpaceIdx != -1) {
+            endIndex = firstSpaceIdx;
+        } else if (firstDigitIdx != -1) {
+            endIndex = firstDigitIdx;
+        }
+        
+        if (endIndex > 0) {
+            return s.substring(0, endIndex);
+        }
+        
+        return s;
+    }
+
+
     private final TradeService tradeService;
 
     public AnalyticsService(TradeService tradeService) {
@@ -91,7 +129,7 @@ public class AnalyticsService {
         Map<String, SymbolAnalyticsResponse> map = new HashMap<>();
 
         for (Trade trade : trades) {
-            String symbol = trade.getSymbol();
+            String symbol = normalizeSymbol(trade.getSymbol());
 
             map.computeIfAbsent(symbol, key -> {
                 SymbolAnalyticsResponse response = new SymbolAnalyticsResponse();
@@ -186,7 +224,7 @@ public class AnalyticsService {
     private MarketHourAnalyticsResponse createEmptyHourBucket(int hour) {
         MarketHourAnalyticsResponse response = new MarketHourAnalyticsResponse();
         response.setHour(hour);
-        response.setHourLabel(String.format("%02d:00â€“%02d:59", hour, hour));
+        response.setHourLabel(String.format("%02d:00Ã¢â‚¬â€œ%02d:59", hour, hour));
         response.setMarketSession(resolveMarketSession(hour));
         response.setTotalTrades(0);
         response.setWinningTrades(0);
@@ -216,4 +254,5 @@ public class AnalyticsService {
         return "AFTER_HOURS";
     }
 }
+
 

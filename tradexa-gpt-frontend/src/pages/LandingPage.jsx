@@ -241,6 +241,22 @@ export default function LandingPage() {
               </Link>
             </Reveal>
             <Reveal>
+              <Link to="/tools/ipo-evaluator" className="card card-hover h-full flex flex-col justify-between min-h-[260px] group">
+                <div>
+                  <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[rgba(255,141,76,.1)] border border-[rgba(255,141,76,.3)] mb-5">
+                    <ScanSearch size={22} className="text-orange-400" />
+                  </span>
+                  <h3 className="font-display font-semibold text-[20px] tracking-tight mb-2.5">IPO Evaluator</h3>
+                  <p className="text-[var(--color-muted)] text-[14.5px] leading-relaxed">
+                    AI-driven analysis of DRHPs and RHPs. Evaluates business, earnings, and governance.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-ink)] mt-6">
+                  Research IPOs <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </Reveal>
+            <Reveal>
               <Link to="/dashboard" className="card card-hover h-full flex flex-col justify-between min-h-[260px] group">
                 <div>
                   <span className="grid place-items-center w-12 h-12 rounded-2xl bg-[rgba(240,185,11,.1)] border border-[rgba(240,185,11,.3)] mb-5">

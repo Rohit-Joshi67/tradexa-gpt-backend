@@ -67,8 +67,13 @@ public class GeminiClient {
 
     /** Blocking single-shot completion. Returns the text plus token usage. */
     public LlmResult generate(String systemPrompt, String userPrompt) {
+        return generate(systemPrompt, userPrompt, null);
+    }
+
+    /** Blocking single-shot completion with optional response mime type (e.g., "application/json"). */
+    public LlmResult generate(String systemPrompt, String userPrompt, String responseMimeType) {
         requireConfigured();
-        String body = requestBody(systemPrompt, List.of(new Turn("user", userPrompt)));
+        String body = requestBody(systemPrompt, List.of(new Turn("user", userPrompt)), responseMimeType);
         HttpRequest request = buildRequest(":generateContent", body);
         try {
             HttpResponse<String> response =
@@ -88,7 +93,7 @@ public class GeminiClient {
     public void stream(String systemPrompt, List<Turn> history, Consumer<String> onToken,
                        Consumer<LlmResult> onComplete) {
         requireConfigured();
-        String body = requestBody(systemPrompt, history);
+        String body = requestBody(systemPrompt, history, null);
         HttpRequest request = buildRequest(":streamGenerateContent?alt=sse", body);
         StringBuilder full = new StringBuilder();
         long promptTokens = 0;
@@ -148,7 +153,7 @@ public class GeminiClient {
                 .build();
     }
 
-    private String requestBody(String systemPrompt, List<Turn> history) {
+    private String requestBody(String systemPrompt, List<Turn> history, String responseMimeType) {
         try {
             var root = objectMapper.createObjectNode();
             var sysParts = objectMapper.createArrayNode();
@@ -175,6 +180,9 @@ public class GeminiClient {
             var config = objectMapper.createObjectNode();
             config.put("maxOutputTokens", properties.getMaxTokens());
             config.put("temperature", properties.getTemperature());
+            if (responseMimeType != null && !responseMimeType.isEmpty()) {
+                config.put("responseMimeType", responseMimeType);
+            }
             root.set("generationConfig", config);
 
             return objectMapper.writeValueAsString(root);

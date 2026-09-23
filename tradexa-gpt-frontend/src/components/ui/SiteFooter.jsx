@@ -7,6 +7,7 @@ const COLS = [
     links: [
       { to: '/tradexa-gpt', label: 'Tradexa-GPT' },
       { to: '/tools/edge-validator', label: 'Edge Validator' },
+      { to: '/tools/ipo-evaluator', label: 'IPO Evaluator' },
       { to: '/dashboard', label: 'Trade Journal' },
       { to: '/pricing', label: 'Pricing' },
     ],

@@ -8,6 +8,7 @@ import { Brand } from './Brand'
 const LINKS = [
   { to: '/tradexa-gpt', label: 'Tradexa-GPT' },
   { to: '/tools/edge-validator', label: 'Edge Validator' },
+  { to: '/tools/ipo-evaluator', label: 'IPO Evaluator' },
   { to: '/blogs', label: 'Blogs' },
   { to: '/pricing', label: 'Pricing' },
   { to: '/vision', label: 'Vision' },
